@@ -226,16 +226,6 @@ fig.tight_layout()
 st.pyplot(fig, use_container_width=True)
 plt.close(fig)
 
-
-
-st.subheader("Potability class distribution")
-class_counts = df["Potability"].value_counts().sort_index()
-class_chart = pd.DataFrame({
-    "Water class": ["Not potable (0)", "Potable (1)"],
-    "Records": [int(class_counts.get(0, 0)), int(class_counts.get(1, 0))]
-}).set_index("Water class")
-st.bar_chart(class_chart, color="#16A6A1")
-
 with st.expander("About this project and its limitations"):
     st.write(
         "This educational application uses a Random Forest classifier. "

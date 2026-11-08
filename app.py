@@ -124,8 +124,8 @@ def load_metrics():
 st.markdown("""
 <div class="hero">
     <h1 style="text-align: center;">UI Created By Ali Jamil</h1>
-    <h1>💧 Water Potability Prediction</h1>
-    <p>Machine-learning dashboard • Random Forest binary classification • Prediction classes: 0 and 1</p>
+    <h1 style="text-align: center;">💧 Water Potability Prediction</h1>
+    <p style="text-align: center;">Machine-learning dashboard • Random Forest binary classification • Prediction classes: 0 and 1</p>
 </div>
 """, unsafe_allow_html=True)
 

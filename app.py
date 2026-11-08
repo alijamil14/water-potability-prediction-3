@@ -123,6 +123,7 @@ def load_metrics():
 
 st.markdown("""
 <div class="hero">
+    <h1>UI Created By Ali Jamil</h1>
     <h1>💧 Water Potability Prediction</h1>
     <p>Machine-learning dashboard • Random Forest binary classification • Prediction classes: 0 and 1</p>
 </div>

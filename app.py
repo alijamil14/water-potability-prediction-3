@@ -226,36 +226,7 @@ fig.tight_layout()
 st.pyplot(fig, use_container_width=True)
 plt.close(fig)
 
-st.divider()
-st.header("Explore the dataset")
-selected_feature = st.selectbox(
-    "Select a water-quality feature",
-    FEATURES,
-    format_func=lambda feature: FRIENDLY_NAMES[feature]
-)
-fig2, ax2 = plt.subplots(figsize=(9, 4))
-ax2.hist(
-    df[selected_feature].dropna(),
-    bins=30,
-    edgecolor="#123B53",
-    color="#16A6A1",
-    alpha=0.78
-)
-ax2.axvline(
-    values[selected_feature],
-    color="#E76F51",
-    linestyle="--",
-    linewidth=2.5,
-    label=f"Current input: {values[selected_feature]:.3f}"
-)
-ax2.set_xlabel(FRIENDLY_NAMES[selected_feature])
-ax2.set_ylabel("Number of records")
-ax2.set_title(f"Distribution of {FRIENDLY_NAMES[selected_feature]}")
-ax2.legend()
-ax2.grid(axis="y", alpha=0.2)
-fig2.tight_layout()
-st.pyplot(fig2, use_container_width=True)
-plt.close(fig2)
+
 
 st.subheader("Potability class distribution")
 class_counts = df["Potability"].value_counts().sort_index()

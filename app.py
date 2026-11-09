@@ -472,7 +472,7 @@ with predict_col:
 
 with input_col:
     with st.container(key="input_measurements"):
-        st.markdown("### 📋 Current input measurements")
+        st.markdown("### Current input measurements")
 
         display_input = input_df.rename(columns=FRIENDLY_NAMES).T
         display_input.columns = ["Entered value"]

@@ -37,75 +37,54 @@ st.set_page_config(
 
 # Custom styling: colors are also defined in .streamlit/config.toml.
 st.markdown("""
-<style>
-    .stApp {
-        background: linear-gradient(135deg, #F4F8FB 0%, #EAF4F6 100%);
-        color: #183044;
-    }
-    [data-testid="stHeader"] {
-        background: rgba(244, 248, 251, 0.88);
-    }
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #102A43 0%, #164E63 100%);
-    }
-    [data-testid="stSidebar"] * {
-        color: #F4FAFC !important;
-    }
-    [data-testid="stSidebar"] input {
-        color: #183044 !important;
-        background-color: #FFFFFF !important;
-    }
-    .hero {
-        padding: 1.5rem 1.8rem;
-        border-radius: 18px;
-        background: linear-gradient(110deg, #123B53 0%, #087E8B 58%, #16A6A1 100%);
-        color: white;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 8px 24px rgba(18, 59, 83, 0.16);
-    }
-    .hero h1 {
-        color: white !important;
-        margin: 0 0 .35rem 0;
-        font-size: 2.1rem;
-    }
-    .hero p {
-        color: #E6FAFA !important;
-        margin: 0;
-        font-size: 1rem;
-    }
-    div[data-testid="stMetric"] {
-        background: #FFFFFF;
-        border: 1px solid #D8E7ED;
-        padding: 1rem;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(18, 59, 83, 0.06);
-    }
+    /* Predict Potability Button */
     div.stButton > button[kind="primary"] {
-        background: linear-gradient(90deg, #087E8B, #16A6A1);
-        color: white;
-        border: 0;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #000000 !important;
         border-radius: 10px;
         font-weight: 700;
         min-height: 3rem;
     }
+
     div.stButton > button[kind="primary"]:hover {
-        background: #075E68;
-        color: white;
-        border: 0;
+        background-color: #333333 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #333333 !important;
     }
-    div[data-testid="stDataFrame"], div[data-testid="stTable"] {
-        border: 1px solid #D8E7ED;
-        border-radius: 12px;
-        overflow: hidden;
+
+    /* Number Input Fields */
+    [data-testid="stNumberInput"] input {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
     }
-    h1, h2, h3 {
-        color: #123B53;
+
+    /* Number Input Plus and Minus Buttons */
+    [data-testid="stNumberInput"] button {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #000000 !important;
     }
-    .small-note {
-        color: #526777;
-        font-size: .88rem;
+
+    [data-testid="stNumberInput"] button:hover {
+        background-color: #333333 !important;
+        color: #FFFFFF !important;
     }
-</style>
+
+    /* Success Alert */
+    div[data-testid="stAlert"]:has([data-testid="stAlertContentSuccess"]) {
+        background-color: #D1FAE5 !important;
+        border: 1px solid #16A34A !important;
+        color: #14532D !important;
+    }
+
+    /* Error Alert */
+    div[data-testid="stAlert"]:has([data-testid="stAlertContentError"]) {
+        background-color: #FEE2E2 !important;
+        border: 1px solid #DC2626 !important;
+        color: #991B1B !important;
+    }
 """, unsafe_allow_html=True)
 
 @st.cache_data

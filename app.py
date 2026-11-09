@@ -192,6 +192,7 @@ with predict_col:
             st.success("Prediction: POTABLE — class 1")
         else:
             st.error("Prediction: NOT POTABLE — class 0")
+            st.error("Water is not drinkable")
 
         prob1, prob2 = st.columns(2)
         prob1.metric("Estimated class 1 probability", f"{probs['potable'] * 100:.1f}%")

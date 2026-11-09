@@ -67,11 +67,8 @@ st.set_page_config(
 # ---------------------------------------------------------
 
 def render_html(content):
-    """
-    Render HTML consistently without allowing indentation
-    to turn HTML elements into Markdown code blocks.
-    """
-
+    # Remove indentation from every line so Markdown does not
+    # interpret indented HTML as a code block.
     html = "\n".join(
         line.lstrip()
         for line in content.splitlines()
@@ -90,9 +87,7 @@ def render_html(content):
 render_html("""
 <style>
 
-/* -----------------------------------------------------
-   MAIN APPLICATION
------------------------------------------------------ */
+/* Main application background */
 
 .stApp {
     background: linear-gradient(
@@ -101,7 +96,6 @@ render_html("""
         #E1F5F8 50%,
         #F4FBFC 100%
     );
-
     color: #111827;
 }
 
@@ -114,22 +108,17 @@ render_html("""
 }
 
 
-/* -----------------------------------------------------
-   HERO SECTION
------------------------------------------------------ */
+/* Hero section */
 
 .hero {
     padding: 35px 25px;
-
     background: linear-gradient(
         120deg,
         #075985 0%,
         #0891B2 45%,
         #2DD4BF 100%
     );
-
     margin-bottom: 28px;
-
     box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
 }
 
@@ -147,9 +136,7 @@ render_html("""
 }
 
 
-/* -----------------------------------------------------
-   SIDEBAR
------------------------------------------------------ */
+/* Sidebar */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -170,38 +157,45 @@ render_html("""
 }
 
 
-/* Sidebar number inputs */
+/* Rounded number input group */
+
+[data-testid="stSidebar"] [data-testid="stNumberInput"] > div {
+    border: 1px solid #111827 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    background: #FFFFFF !important;
+}
+
+/* Number input text field */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
     background: #FFFFFF !important;
     color: #111827 !important;
-    border: 1px solid #111827 !important;
-    border-radius: 5px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }
 
-
-/* Sidebar increment/decrement buttons */
+/* Increment/decrement controls */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
     background: #111827 !important;
     color: #FFFFFF !important;
-    border: 1px solid #111827 !important;
+    border: none !important;
+    border-radius: 0 !important;
 }
-
 
 /* Observed dataset range */
 
 .range-info {
     background: #FFFFFF !important;
     color: #111827 !important;
-
     padding: 7px 10px;
-    margin-top: -5px;
-    margin-bottom: 12px;
-
+    margin-top: 6px;
+    margin-bottom: 13px;
     font-size: 12px;
     font-weight: 600;
-
+    border-radius: 7px;
     border-left: 3px solid #075985;
 }
 
@@ -210,46 +204,34 @@ render_html("""
 }
 
 
-/* -----------------------------------------------------
-   PREDICTION BUTTON
------------------------------------------------------ */
+/* Predict button */
 
 div.stButton > button[kind="primary"] {
     background-color: #000000 !important;
     color: #FFFFFF !important;
-
     border: 1px solid #000000 !important;
-    border-radius: 7px !important;
-
+    border-radius: 9px !important;
     font-weight: 700 !important;
     min-height: 3rem;
-
-    transition: all 0.25s ease;
+    transition: color 0.25s ease, border-color 0.25s ease;
 }
 
 div.stButton > button[kind="primary"]:hover {
     background-color: #000000 !important;
     color: #38BDF8 !important;
-
     border: 1px solid #38BDF8 !important;
-
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 
-/* -----------------------------------------------------
-   PREDICTION RESULT
------------------------------------------------------ */
+/* Prediction result */
 
 .prediction-panel {
-    padding: 28px;
-    margin-top: 20px;
-    margin-bottom: 18px;
-
-    border-radius: 16px;
-
+    padding: 22px;
+    margin-top: 18px;
+    margin-bottom: 14px;
+    border-radius: 14px;
     color: #FFFFFF !important;
-
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
 
@@ -273,20 +255,19 @@ div.stButton > button[kind="primary"]:hover {
 
 .prediction-panel h2 {
     color: #FFFFFF !important;
-    font-size: 25px;
+    font-size: 21px;
     margin-top: 0;
+    margin-bottom: 9px;
 }
 
 .prediction-panel p {
     color: #FFFFFF !important;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 0;
 }
 
 
-/* -----------------------------------------------------
-   PROBABILITY FIGURE CARDS
------------------------------------------------------ */
+/* Probability cards */
 
 .probability-card {
     background: linear-gradient(
@@ -295,39 +276,34 @@ div.stButton > button[kind="primary"]:hover {
         #202020 55%,
         #101010 100%
     );
-
-    padding: 22px;
-    border-radius: 14px;
-
+    padding: 17px 12px;
+    border-radius: 12px;
     text-align: center;
-
     border: 1px solid #383838;
-
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
+    min-height: 112px;
 }
 
 .probability-card h4 {
     color: #D4D4D4 !important;
-    font-size: 15px;
+    font-size: 13px;
     margin: 0;
 }
 
 .probability-card h2 {
     color: #FFFFFF !important;
-    font-size: 32px;
-    margin: 12px 0;
+    font-size: 25px;
+    margin: 10px 0;
 }
 
 .probability-card p {
     color: #AAAAAA !important;
-    font-size: 13px;
+    font-size: 11px;
     margin: 0;
 }
 
 
-/* -----------------------------------------------------
-   CURRENT INPUT MEASUREMENTS
------------------------------------------------------ */
+/* Current input measurements */
 
 .measurement-panel {
     background: linear-gradient(
@@ -336,11 +312,8 @@ div.stButton > button[kind="primary"]:hover {
         #292929 55%,
         #111111 100%
     );
-
     padding: 24px;
-
     border-radius: 12px;
-
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
 }
 
@@ -359,26 +332,20 @@ div.stButton > button[kind="primary"]:hover {
 .measurement-panel th {
     background: #303030;
     color: #FFFFFF !important;
-
     text-align: left;
     padding: 12px;
-
     border-bottom: 1px solid #555555;
 }
 
 .measurement-panel td {
     background: #171717;
     color: #FFFFFF !important;
-
     padding: 11px 12px;
-
     border-bottom: 1px solid #383838;
 }
 
 
-/* -----------------------------------------------------
-   MODEL EVALUATION HEADER
------------------------------------------------------ */
+/* Model evaluation header */
 
 .evaluation-header {
     background: linear-gradient(
@@ -387,14 +354,10 @@ div.stButton > button[kind="primary"]:hover {
         #292929 55%,
         #101010 100%
     );
-
     padding: 27px;
-
     margin-top: 25px;
     margin-bottom: 22px;
-
     border-radius: 14px;
-
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
 }
 
@@ -413,9 +376,7 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* -----------------------------------------------------
-   EVALUATION METRIC CARDS
------------------------------------------------------ */
+/* Evaluation metric cards */
 
 div[data-testid="stMetric"] {
     background: linear-gradient(
@@ -424,13 +385,9 @@ div[data-testid="stMetric"] {
         #171717 55%,
         #080808 100%
     ) !important;
-
     padding: 22px !important;
-
     border-radius: 15px !important;
-
     border: 1px solid #303030 !important;
-
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
 }
 
@@ -444,26 +401,19 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 }
 
 
-/* -----------------------------------------------------
-   CONFUSION MATRIX
------------------------------------------------------ */
+/* Confusion matrix heading */
 
 .confusion-title {
     color: #111827 !important;
-
     text-align: center;
-
     font-size: 22px;
     font-weight: 750;
-
     margin-top: 28px;
     margin-bottom: 15px;
 }
 
 
-/* -----------------------------------------------------
-   CAPTIONS
------------------------------------------------------ */
+/* Captions */
 
 .stApp [data-testid="stCaptionContainer"] {
     color: #374151;
@@ -500,7 +450,6 @@ def load_metrics():
 
 render_html("""
 <div class="hero">
-
     <h1 style="text-align: center;">
         UI Created By Ali Jamil
     </h1>
@@ -513,7 +462,6 @@ render_html("""
         Machine-learning dashboard • Random Forest binary classification
         • Prediction classes: 0 and 1
     </p>
-
 </div>
 """)
 
@@ -529,13 +477,11 @@ missing_files = [
 ]
 
 if missing_files:
-
     st.error(
         "Required project files are missing: "
         + ", ".join(missing_files)
         + ". Check your data/ and models/ folders."
     )
-
     st.stop()
 
 
@@ -555,34 +501,29 @@ metrics = load_metrics()
 values = {}
 
 with st.sidebar:
-
     st.header("💧 Water-quality inputs")
 
     st.caption(
         "Enter the water measurements below."
     )
 
-    st.divider()
+    # The divider has been removed to avoid the unwanted
+    # horizontal line in the sidebar.
 
     for feature in FEATURES:
-
         series = df[feature].dropna()
 
         default_value = float(series.median())
-
         observed_min = float(series.min())
         observed_max = float(series.max())
 
         values[feature] = st.number_input(
             FRIENDLY_NAMES[feature],
-
             value=default_value,
-
             step=max(
                 (observed_max - observed_min) / 100,
                 0.01
             ),
-
             format="%.4f"
         )
 
@@ -610,7 +551,7 @@ input_df = pd.DataFrame(
 
 
 # ---------------------------------------------------------
-# PREDICTION BUTTON AND INPUT MEASUREMENTS
+# WATER SAMPLE PREDICTION AND MEASUREMENTS
 # ---------------------------------------------------------
 
 st.subheader("Water sample prediction")
@@ -619,11 +560,10 @@ predict_col, input_col = st.columns([1.05, 1])
 
 
 # ---------------------------------------------------------
-# PREDICTION BUTTON
+# PREDICTION BUTTON AND RESULT
 # ---------------------------------------------------------
 
 with predict_col:
-
     st.write(
         "Enter the measurements and click the button to predict water potability."
     )
@@ -635,7 +575,6 @@ with predict_col:
     )
 
     if predict_clicked:
-
         predicted_class = int(
             model.predict(input_df)[0]
         )
@@ -657,17 +596,89 @@ with predict_col:
             "not_potable": class_probabilities.get(0, 0.0)
         }
 
+        # Keep the result linked to the values that produced it.
+        st.session_state["last_input_values"] = values.copy()
+
+    # Show the prediction and probability cards directly below
+    # the button, in the empty area marked in the reference image.
+
+    if "last_prediction" in st.session_state:
+        predicted_class = st.session_state["last_prediction"]
+        probabilities = st.session_state["last_probabilities"]
+
+        if "last_input_values" in st.session_state:
+            same_input = all(
+                np.isclose(
+                    values[feature],
+                    st.session_state["last_input_values"][feature]
+                )
+                for feature in FEATURES
+            )
+        else:
+            same_input = False
+
+        if same_input:
+            if predicted_class == 1:
+                render_html("""
+                <div class="prediction-panel prediction-success">
+                    <h2>✓ Water is good for health and drinkable</h2>
+                    <p>
+                        The Random Forest model classifies this sample
+                        as potable water.
+                    </p>
+                </div>
+                """)
+            else:
+                render_html("""
+                <div class="prediction-panel prediction-error">
+                    <h2>✕ Water is not drinkable and dangerous for health</h2>
+                    <p>
+                        The Random Forest model classifies this sample
+                        as non-potable water.
+                    </p>
+                </div>
+                """)
+
+            probability_col1, probability_col2 = st.columns(2)
+
+            with probability_col1:
+                render_html(f"""
+                <div class="probability-card">
+                    <h4>Potable Probability</h4>
+                    <h2>{probabilities['potable'] * 100:.2f}%</h2>
+                    <p>Class 1 - Potable</p>
+                </div>
+                """)
+
+            with probability_col2:
+                render_html(f"""
+                <div class="probability-card">
+                    <h4>Non-Potable Probability</h4>
+                    <h2>{probabilities['not_potable'] * 100:.2f}%</h2>
+                    <p>Class 0 - Not potable</p>
+                </div>
+                """)
+
+            st.caption(
+                "These percentages are model estimates, not laboratory "
+                "measurements. A prediction alone cannot establish "
+                "drinking-water safety."
+            )
+        else:
+            st.info(
+                "The input values have changed. Click Predict Potability "
+                "again to calculate a result for the updated measurements."
+            )
+
 
 # ---------------------------------------------------------
 # CURRENT INPUT MEASUREMENTS
 # ---------------------------------------------------------
 
 with input_col:
-
     measurement_rows = ""
 
     for feature in FEATURES:
-
         label = FRIENDLY_NAMES[feature]
         value = values[feature]
 
@@ -680,11 +691,9 @@ with input_col:
 
     render_html(f"""
     <div class="measurement-panel">
-
         <h3>Current input measurements</h3>
 
         <table>
-
             <thead>
                 <tr>
                     <th>Measurement</th>
@@ -695,112 +704,23 @@ with input_col:
             <tbody>
                 {measurement_rows}
             </tbody>
-
         </table>
-
     </div>
     """)
 
 
 # ---------------------------------------------------------
-# PREDICTION RESULT - SEPARATE ROW
+# MODEL EVALUATION
 # ---------------------------------------------------------
-
-if "last_prediction" in st.session_state:
-
-    predicted_class = st.session_state["last_prediction"]
-
-    probabilities = st.session_state["last_probabilities"]
-
-    st.markdown(
-        '<div style="margin-top:25px;"></div>',
-        unsafe_allow_html=True
-    )
-
-    if predicted_class == 1:
-
-        render_html("""
-        <div class="prediction-panel prediction-success">
-
-            <h2>✓ Water is good for health and drinkable</h2>
-
-            <p>
-                The Random Forest model classifies this sample
-                as potable water.
-            </p>
-
-        </div>
-        """)
-
-    else:
-
-        render_html("""
-        <div class="prediction-panel prediction-error">
-
-            <h2>✕ Water is not drinkable and dangerous for health</h2>
-
-            <p>
-                The Random Forest model classifies this sample
-                as non-potable water.
-            </p>
-
-        </div>
-        """)
-
-    # Probability figures
-
-    probability_col1, probability_col2 = st.columns(2)
-
-    with probability_col1:
-
-        render_html(f"""
-        <div class="probability-card">
-
-            <h4>Potable Probability</h4>
-
-            <h2>{probabilities['potable'] * 100:.2f}%</h2>
-
-            <p>Class 1 - Drinkable</p>
-
-        </div>
-        """)
-
-    with probability_col2:
-
-        render_html(f"""
-        <div class="probability-card">
-
-            <h4>Non-Potable Probability</h4>
-
-            <h2>{probabilities['not_potable'] * 100:.2f}%</h2>
-
-            <p>Class 0 - Not drinkable</p>
-
-        </div>
-        """)
-
-    st.caption(
-        "These percentages are model estimates, not laboratory measurements. "
-        "A prediction alone cannot establish drinking-water safety."
-    )
-
 
 st.divider()
 
-
-# ---------------------------------------------------------
-# MODEL EVALUATION HEADER
-# ---------------------------------------------------------
-
 render_html("""
 <div class="evaluation-header">
-
     <h2>📊 Model Evaluation</h2>
-
     <p>
         Performance on the held-out test dataset
     </p>
-
 </div>
 """)
 
@@ -883,7 +803,6 @@ left_col, center_col, right_col = st.columns(
 )
 
 with center_col:
-
     st.pyplot(
         fig,
         use_container_width=True
@@ -899,7 +818,6 @@ plt.close(fig)
 with st.expander(
     "About this project and its limitations"
 ):
-
     st.write(
         "This educational application uses a Random Forest classifier. "
         "The target is Potability: 0 means not potable and 1 means potable. "

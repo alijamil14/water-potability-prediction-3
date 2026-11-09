@@ -330,8 +330,7 @@ with predict_col:
 
     # Successful prediction
         if predicted_class == 1:
-
-        st.markdown("""
+            st.markdown("""
         <div class="prediction-success">
             ✅ WATER IS POTABLE
             <br><br>
@@ -340,7 +339,7 @@ with predict_col:
         """, unsafe_allow_html=True)
 
     # Unsuccessful prediction
-    else:
+        else:
             st.markdown("""
             <div class="prediction-error">
             ⚠️ WATER IS NOT POTABLE
@@ -369,14 +368,13 @@ with predict_col:
     st.caption(
         "Model estimates only. These results do not guarantee drinking-water safety."
     )
-
 else:
 st.info(
         "Enter the sample measurements in the sidebar and click Predict Potability."
     )
 
 
-with input_col:
+    with input_col:
 
         with st.container(key="input_measurements"):
 

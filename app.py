@@ -362,243 +362,75 @@ def load_metrics():
     )
 render_html("""
 <div class="hero">
-    <h1 style="text-align: center; font-size: 50px;">UI Created By Ali Jamil</h1>
+    <h1 style="text-align: center; font-size: 30px;">UI Created By Ali Jamil</h1>
     <h1 style="text-align: center; font-size: 50px;">💧 Water Potability Prediction</h1>
-
-
-
     <p style="text-align: center;">
-
         Machine-learning dashboard • Random Forest binary classification
-
         • Prediction classes: 0 and 1
-
     </p>
-
 </div>
-
 """)
-
-
-
-
-
-# ---------------------------------------------------------
-
-# CHECK REQUIRED FILES
-
-# ---------------------------------------------------------
-
-
-
 missing_files = [
-
     path.name
-
     for path in [DATA_PATH, MODEL_PATH, METRICS_PATH]
-
     if not path.exists()
-
 ]
-
-
-
 if missing_files:
-
     st.error(
-
         "Required project files are missing: "
-
         + ", ".join(missing_files)
-
         + ". Check your data/ and models/ folders."
-
     )
-
     st.stop()
-
-
-
-
-
-# ---------------------------------------------------------
-
-# LOAD PROJECT RESOURCES
-
-# ---------------------------------------------------------
-
-
-
 df = load_data()
-
 model = load_model()
-
 metrics = load_metrics()
-
-
-
-
-
-# ---------------------------------------------------------
-
-# SIDEBAR INPUTS
-
-# ---------------------------------------------------------
-
-
-
 values = {}
-
-
-
 with st.sidebar:
-
     st.header("💧 Water-quality inputs")
-
-
-
     st.caption(
-
         "Enter the water measurements below."
-
     )
-
-
-
-    # The divider has been removed to avoid the unwanted
-
-    # horizontal line in the sidebar.
-
-
-
     for feature in FEATURES:
-
         series = df[feature].dropna()
-
-
-
         default_value = float(series.median())
-
         observed_min = float(series.min())
-
         observed_max = float(series.max())
-
-
-
         values[feature] = st.number_input(
-
             FRIENDLY_NAMES[feature],
-
             value=default_value,
-
             step=max(
-
                 (observed_max - observed_min) / 100,
-
                 0.01
-
             ),
-
             format="%.4f"
-
         )
-
-
-
         st.markdown(
-
             f"""
-
             <div class="range-info">
-
                 Observed range:
-
                 <span>{observed_min:.3f}</span>
-
                 to
-
                 <span>{observed_max:.3f}</span>
-
             </div>
-
             """,
-
             unsafe_allow_html=True
-
         )
-
-
-
-
-
-# ---------------------------------------------------------
-
-# PREPARE INPUT DATA
-
-# ---------------------------------------------------------
-
-
-
 input_df = pd.DataFrame(
-
     [values],
-
     columns=FEATURES
-
 )
-
-
-
-
-
-# ---------------------------------------------------------
-
-# WATER SAMPLE PREDICTION AND MEASUREMENTS
-
-# ---------------------------------------------------------
-
-
-
 st.subheader("Water sample prediction")
-
-
-
 predict_col, input_col = st.columns([1.05, 1])
-
-
-
-
-
-# ---------------------------------------------------------
-
-# PREDICTION BUTTON AND RESULT
-
-# ---------------------------------------------------------
-
-
-
 with predict_col:
-
     st.write(
-
         "Enter the measurements and click the button to predict water potability."
-
     )
-
-
-
     predict_clicked = st.button(
-
         "Predict Potability",
-
         type="primary",
-
         use_container_width=True
-
     )
-
-
-
     if predict_clicked:
 
         predicted_class = int(

@@ -147,14 +147,19 @@ st.subheader("Water sample prediction")
 predict_col, input_col = st.columns([1.05, 1])
 
 with predict_col:
+
     st.write("Run the trained model on the values entered in the sidebar.")
+
     if st.button("Predict potability", type="primary", use_container_width=True):
+
         predicted_class = int(model.predict(input_df)[0])
         probabilities = model.predict_proba(input_df)[0]
+
         class_to_probability = {
             int(label): float(probability)
             for label, probability in zip(model.classes_, probabilities)
         }
+
         potable_probability = class_to_probability.get(1, 0.0)
         not_potable_probability = class_to_probability.get(0, 0.0)
 
@@ -163,41 +168,58 @@ with predict_col:
             "potable": potable_probability,
             "not_potable": not_potable_probability
         }
-
+    # Display prediction result
     if "last_prediction" in st.session_state:
 
-    predicted_class = st.session_state["last_prediction"]
-    probs = st.session_state["last_probabilities"]
+        predicted_class = st.session_state["last_prediction"]
+        probs = st.session_state["last_probabilities"]
 
-    if predicted_class == 1:
+        if predicted_class == 1:
 
-        st.success(
-            "Water is drinkable and healthy for people",
-            icon="✅"
+            st.success(
+                "Water is drinkable and healthy for people",
+                icon="✅"
+            )
+
+        else:
+
+            st.error(
+                "Water is not drinkable and may affect people's health",
+                icon="⚠️"
+            )
+
+        prob1, prob2 = st.columns(2)
+
+        prob1.metric(
+            "Estimated class 1 probability",
+            f"{probs['potable'] * 100:.1f}%"
         )
+
+        prob2.metric(
+            "Estimated class 0 probability",
+            f"{probs['not_potable'] * 100:.1f}%"
+        )
+
+        st.caption(
+            "These are model estimates, not a laboratory result "
+            "or a guarantee of drinking-water safety."
+        )
+
     else:
-        st.error(
-            "Water is not drinkable and may affect people's health",
-            icon="⚠️"
+
+        st.info(
+            "Enter the sample measurements in the sidebar "
+            "and click **Predict potability**."
         )
-    prob1, prob2 = st.columns(2)
-    prob1.metric(
-        "Estimated class 1 probability",
-        f"{probs['potable'] * 100:.1f}%"
-    )
-    prob2.metric(
-        "Estimated class 0 probability",
-        f"{probs['not_potable'] * 100:.1f}%"
-    )
-    st.caption(
-        "These are model estimates, not a laboratory result "
-        "or a guarantee of drinking-water safety."
-    )
+
 
 with input_col:
+
     st.markdown("**Current input measurements**")
+
     display_input = input_df.rename(columns=FRIENDLY_NAMES).T
     display_input.columns = ["Entered value"]
+
     st.dataframe(display_input, use_container_width=True)
 
 st.divider()

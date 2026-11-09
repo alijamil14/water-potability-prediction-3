@@ -191,7 +191,7 @@ with predict_col:
         if predicted_class == 1:
             st.success("Prediction: POTABLE — class 1")
         else:
-            st.error("Prediction: NOT POTABLE — class 0")
+            # st.error("Prediction: NOT POTABLE — class 0")
             st.error("Water is not drinkable")
 
         prob1, prob2 = st.columns(2)

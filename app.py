@@ -38,174 +38,193 @@ st.set_page_config(
 # Custom styling: colors are also defined in .streamlit/config.toml.
 st.markdown("""
 <style>
-
-/* Main application background */
 .stApp {
-    background: linear-gradient(135deg, #F4F8FB 0%, #E8EEF3 100%);
-    color: #FFFFFF;
+    background: linear-gradient(
+        135deg,
+        #F0FAFC 0%,
+        #E1F5F8 50%,
+        #F4FBFC 100%
+    );
+    color: #111827;
 }
-
-/* Main heading */
+/* Main screen text */
+.stApp p,
+.stApp label,
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4,
+.stApp span {
+    color: #111827;
+}
 .hero {
     padding: 35px 25px;
     border-radius: 50px;
-    background: linear-gradient(135deg, #111827 0%, #374151 50%, #111827 100%);
-    color: white;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.20);
-}
 
+    background: linear-gradient(
+        120deg,
+        #075985 0%,
+        #0891B2 45%,
+        #2DD4BF 100%
+    );
+    color: white !important;
+    margin-bottom: 30px;
+
+    box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
+}
 .hero h1 {
     color: #FFFFFF !important;
     font-size: 2.1rem;
     margin-bottom: 12px;
 }
-
 .hero p {
-    color: #D1D5DB !important;
+    color: #E0F7FA !important;
     font-size: 1rem;
 }
-
-/* Sidebar - same gradient as main heading */
 [data-testid="stSidebar"] {
-    background: linear-gradient(135deg, #111827 0%, #374151 50%, #111827 100%);
+    background: linear-gradient(
+        160deg,
+        #075985 0%,
+        #0891B2 50%,
+        #2DD4BF 100%
+    );
 }
-
 [data-testid="stSidebar"] * {
     color: #FFFFFF !important;
 }
-
+/* Sidebar input text */
 [data-testid="stSidebar"] input {
     background-color: #FFFFFF !important;
     color: #111827 !important;
-    border-radius: 10px;
+    border-radius: 12px;
 }
-
 /* Sidebar number input buttons */
 [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
-    background-color: #000000 !important;
+    background-color: #111827 !important;
     color: #FFFFFF !important;
 }
-
-/* Main headings */
-h1, h2, h3 {
-    color: #FFFFFF !important;
+.st-key-water_input_group {
+    background: linear-gradient(
+        145deg,
+        #075985 0%,
+        #0891B2 55%,
+        #2DD4BF 100%
+    );
+    padding: 25px 18px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.35);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
-
-/* Main sections */
-.section-box {
-    background: linear-gradient(135deg, #111827 0%, #374151 100%);
-    padding: 30px;
-    border-radius: 50px;
-    margin: 20px 0;
-    color: #FFFFFF;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.section-box h2,
-.section-box h3,
-.section-box p {
-    color: #FFFFFF !important;
-}
-
-/* Prediction success */
 .prediction-success {
-    background: linear-gradient(135deg, #064E3B, #16A34A);
-    color: #FFFFFF;
+    background: linear-gradient(
+        120deg,
+        #047857,
+        #0D9488,
+        #2DD4BF
+    );
+    color: white !important;
     padding: 25px;
     border-radius: 30px;
     margin: 20px 0;
-    border: 1px solid #22C55E;
+    border: 1px solid #5EEAD4;
     font-size: 18px;
     font-weight: 700;
 }
-
-/* Prediction error */
 .prediction-error {
-    background: linear-gradient(135deg, #7F1D1D, #DC2626);
-    color: #FFFFFF;
+    background: linear-gradient(
+        120deg,
+        #075985,
+        #0369A1,
+        #0891B2
+    );
+    color: white !important;
     padding: 25px;
     border-radius: 30px;
     margin: 20px 0;
-    border: 1px solid #EF4444;
+    border: 1px solid #38BDF8;
     font-size: 18px;
     font-weight: 700;
 }
-
-/* Probability cards */
 .probability-card {
-    background: linear-gradient(135deg, #111827, #374151);
+    background: linear-gradient(
+        135deg,
+        #075985,
+        #0891B2,
+        #164E63
+    );
     padding: 25px;
     border-radius: 30px;
     margin: 10px 0;
     text-align: center;
-    color: #FFFFFF;
+    color: white !important;
 }
-
-.probability-card h4 {
-    color: #D1D5DB !important;
-    font-size: 15px;
+.probability-card h4,
+.probability-card h2,
+.probability-card p {
+    color: white !important;
 }
+.st-key-input_measurements {
+    background: linear-gradient(
+        135deg,
+        #111827 0%,
+        #374151 55%,
+        #1F2937 100%
+    );
 
-.probability-card h2 {
-    color: #FFFFFF !important;
-    font-size: 30px;
-}
-
-/* Evaluation metric cards */
-div[data-testid="stMetric"] {
-    background: linear-gradient(135deg, #111827, #374151);
     padding: 25px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.st-key-input_measurements p,
+.st-key-input_measurements h2,
+.st-key-input_measurements h3 {
+    color: #FFFFFF !important;
+}
+div[data-testid="stMetric"] {
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #374151,
+        #1F2937
+    );
+    padding: 22px;
     border-radius: 30px;
     border: 1px solid #4B5563;
     box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
-
 div[data-testid="stMetric"] label,
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     color: #FFFFFF !important;
 }
-
-/* Predict button */
 div.stButton > button[kind="primary"] {
-    background-color: #000000 !important;
+    background-color: #111827 !important;
     color: #FFFFFF !important;
-    border: 1px solid #000000 !important;
+    border: 1px solid #111827 !important;
     border-radius: 15px;
     font-weight: 700;
     min-height: 3rem;
 }
-
 div.stButton > button[kind="primary"]:hover {
     background-color: #374151 !important;
     color: #FFFFFF !important;
 }
-
-/* Number input */
 [data-testid="stNumberInput"] input {
     background-color: #FFFFFF !important;
-    color: #000000 !important;
-    border: 1px solid #000000 !important;
+    color: #111827 !important;
+    border: 1px solid #111827 !important;
 }
-
-/* Plus and minus buttons */
 [data-testid="stNumberInput"] button {
-    background-color: #000000 !important;
+    background-color: #111827 !important;
     color: #FFFFFF !important;
 }
-
-/* Dataframe */
 div[data-testid="stDataFrame"] {
-    border-radius: 20px;
+    border-radius: 15px;
     overflow: hidden;
 }
-
-/* Caption */
-.small-note {
-    color: #D1D5DB;
-    font-size: 0.9rem;
+.stCaption {
+    color: #374151 !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -256,23 +275,25 @@ if missing_files:
 df = load_data()
 model = load_model()
 metrics = load_metrics()
-
-st.sidebar.header("Water-quality inputs")
-st.sidebar.caption("Enter measurements, then run the prediction.")
-
 values = {}
-for feature in FEATURES:
-    series = df[feature].dropna()
-    default_value = float(series.median())
-    observed_min = float(series.min())
-    observed_max = float(series.max())
-    values[feature] = st.sidebar.number_input(
-        FRIENDLY_NAMES[feature],
-        value=default_value,
-        step=max((observed_max - observed_min) / 100, 0.01),
-        format="%.4f",
-        help=f"Observed dataset range: {observed_min:.3f} to {observed_max:.3f}"
+with st.sidebar.container(key="water_input_group"):
+
+    st.header("💧 Water-quality inputs")
+    st.caption(
+        "Enter measurements, then run the prediction."
     )
+    for feature in FEATURES:
+        series = df[feature].dropna()
+        default_value = float(series.median())
+        observed_min = float(series.min())
+        observed_max = float(series.max())
+        values[feature] = st.number_input(
+            FRIENDLY_NAMES[feature],
+            value=default_value,
+            step=max((observed_max - observed_min) / 100, 0.01),
+            format="%.4f",
+            help=f"Observed dataset range: {observed_min:.3f} to {observed_max:.3f}"
+        )
 
 input_df = pd.DataFrame([values], columns=FEATURES)
 
@@ -362,14 +383,16 @@ with predict_col:
 
 
 with input_col:
-
-    st.markdown("**Current input measurements**")
-
-    display_input = input_df.rename(columns=FRIENDLY_NAMES).T
-    display_input.columns = ["Entered value"]
-
-    st.dataframe(display_input, use_container_width=True)
-
+    with st.container(key="input_measurements"):
+        st.markdown("### 📋 Current input measurements")
+        display_input = input_df.rename(
+            columns=FRIENDLY_NAMES
+        ).T
+        display_input.columns = ["Entered value"]
+        st.dataframe(
+            display_input,
+            use_container_width=True
+        )
 st.divider()
 st.header("Model evaluation on the held-out test set")
 metric_cols = st.columns(4)

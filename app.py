@@ -208,7 +208,7 @@ render_html("""
 
 div.stButton > button[kind="primary"] {
     background-color: #000000 !important;
-    color: #FFFFFF !important;
+    color: #F4B21A !important;
     border: 1px solid #000000 !important;
     border-radius: 9px !important;
     font-weight: 700 !important;
@@ -218,7 +218,7 @@ div.stButton > button[kind="primary"] {
 
 div.stButton > button[kind="primary"]:hover {
     background-color: #000000 !important;
-    color: #38BDF8 !important;
+    color: #F4B21A !important;
     border: 1px solid #38BDF8 !important;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
@@ -392,11 +392,11 @@ div[data-testid="stMetric"] {
 }
 
 div[data-testid="stMetric"] label {
-    color: #D4D4D4 !important;
+    color: #F4B21A !important;
 }
 
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-    color: #FFFFFF !important;
+    color: #F4B21A !important;
     font-weight: 700 !important;
 }
 

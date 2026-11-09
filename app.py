@@ -189,10 +189,11 @@ with predict_col:
         predicted_class = st.session_state["last_prediction"]
         probs = st.session_state["last_probabilities"]
         if predicted_class == 1:
-            st.success("Prediction: POTABLE — class 1")
+            # st.success("Prediction: POTABLE — class 1")
+            st.error("Water is drinkable and healthy for People")
         else:
             # st.error("Prediction: NOT POTABLE — class 0")
-            st.error("Water is not drinkable")
+            st.error("Water is not drinkable and can cause effect People's health")
 
         prob1, prob2 = st.columns(2)
         prob1.metric("Estimated class 1 probability", f"{probs['potable'] * 100:.1f}%")

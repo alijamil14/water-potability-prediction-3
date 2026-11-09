@@ -190,7 +190,7 @@ with predict_col:
         probs = st.session_state["last_probabilities"]
         if predicted_class == 1:
             # st.success("Prediction: POTABLE — class 1")
-            st.error("Water is drinkable and healthy for People")
+            st.success("Water is drinkable and healthy for People")
         else:
             # st.error("Prediction: NOT POTABLE — class 0")
             st.error("Water is not drinkable and can cause effect People's health")

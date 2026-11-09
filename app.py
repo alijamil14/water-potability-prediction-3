@@ -68,8 +68,10 @@ st.set_page_config(
 # ---------------------------------------------------------
 
 def render_html(content):
+    html = dedent(content).strip()
+
     st.markdown(
-        dedent(content).strip(),
+        html,
         unsafe_allow_html=True
     )
 
@@ -81,9 +83,7 @@ def render_html(content):
 render_html("""
 <style>
 
-/* -----------------------------------------------------
-   MAIN APPLICATION
------------------------------------------------------ */
+/* MAIN APPLICATION */
 
 .stApp {
     background: linear-gradient(
@@ -100,15 +100,12 @@ render_html("""
 .stApp h2,
 .stApp h3,
 .stApp h4,
-.stApp p,
-.stApp label {
+.stApp p {
     color: #111827;
 }
 
 
-/* -----------------------------------------------------
-   HERO SECTION
------------------------------------------------------ */
+/* HERO SECTION */
 
 .hero {
     padding: 35px 25px;
@@ -139,9 +136,7 @@ render_html("""
 }
 
 
-/* -----------------------------------------------------
-   SIDEBAR
------------------------------------------------------ */
+/* SIDEBAR */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -161,7 +156,7 @@ render_html("""
     color: #FFFFFF !important;
 }
 
-/* Input fields */
+/* Sidebar number inputs */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
     background: #FFFFFF !important;
@@ -170,7 +165,7 @@ render_html("""
     border-radius: 5px !important;
 }
 
-/* Plus and minus buttons */
+/* Sidebar increment/decrement buttons */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
     background: #111827 !important;
@@ -178,100 +173,136 @@ render_html("""
     border: 1px solid #111827 !important;
 }
 
+/* Observed dataset range */
 
-/* -----------------------------------------------------
-   PREDICTION BUTTON
------------------------------------------------------ */
+.range-info {
+    background: #FFFFFF;
+    color: #111827 !important;
+
+    padding: 7px 10px;
+    margin-top: -5px;
+    margin-bottom: 12px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border-left: 3px solid #075985;
+}
+
+.range-info span {
+    color: #111827 !important;
+}
+
+
+/* PREDICTION BUTTON */
 
 div.stButton > button[kind="primary"] {
     background: #000000 !important;
     color: #FFFFFF !important;
 
     border: 1px solid #000000 !important;
-    border-radius: 5px !important;
+    border-radius: 7px !important;
 
     font-weight: 700 !important;
     min-height: 3rem;
+
+    transition: all 0.25s ease;
 }
 
 div.stButton > button[kind="primary"]:hover {
-    background: #252525 !important;
-    color: #FFFFFF !important;
-    border-color: #252525 !important;
+    background: #000000 !important;
+    color: #38BDF8 !important;
+
+    border-color: #38BDF8 !important;
+
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 
-/* -----------------------------------------------------
-   PREDICTION RESULT
------------------------------------------------------ */
+/* PREDICTION RESULT */
 
 .prediction-panel {
-    background: linear-gradient(
-        135deg,
-        #050505 0%,
-        #252525 55%,
-        #101010 100%
-    );
-
-    padding: 26px;
-    margin-top: 18px;
+    padding: 28px;
+    margin-top: 20px;
     margin-bottom: 18px;
 
     color: #FFFFFF !important;
 
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
 
-.prediction-panel h3 {
+.prediction-success {
+    background: linear-gradient(
+        120deg,
+        #14532D 0%,
+        #15803D 50%,
+        #22C55E 100%
+    );
+}
+
+.prediction-error {
+    background: linear-gradient(
+        120deg,
+        #7F1D1D 0%,
+        #B91C1C 50%,
+        #EF4444 100%
+    );
+}
+
+.prediction-panel h2 {
     color: #FFFFFF !important;
+    font-size: 25px;
     margin-top: 0;
 }
 
 .prediction-panel p {
-    color: #E5E5E5 !important;
+    color: #FFFFFF !important;
+    font-size: 16px;
     margin-bottom: 0;
 }
 
-.status-potable {
-    display: inline-block;
 
+/* PROBABILITY CARDS */
+
+.probability-card {
     background: linear-gradient(
-        120deg,
-        #15803D,
-        #16A34A
+        135deg,
+        #000000 0%,
+        #202020 55%,
+        #101010 100%
     );
 
-    color: #FFFFFF !important;
+    padding: 22px;
 
-    padding: 11px 18px;
-    margin-bottom: 16px;
+    border-radius: 12px;
 
-    font-size: 18px;
-    font-weight: 750;
+    text-align: center;
+
+    border: 1px solid #383838;
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
 }
 
-.status-not-potable {
-    display: inline-block;
+.probability-card h4 {
+    color: #D4D4D4 !important;
+    font-size: 15px;
+    margin: 0;
+}
 
-    background: linear-gradient(
-        120deg,
-        #B91C1C,
-        #EF4444
-    );
-
+.probability-card h2 {
     color: #FFFFFF !important;
+    font-size: 32px;
+    margin: 12px 0;
+}
 
-    padding: 11px 18px;
-    margin-bottom: 16px;
-
-    font-size: 18px;
-    font-weight: 750;
+.probability-card p {
+    color: #AAAAAA !important;
+    font-size: 13px;
+    margin: 0;
 }
 
 
-/* -----------------------------------------------------
-   CURRENT INPUT MEASUREMENTS
------------------------------------------------------ */
+/* CURRENT INPUT MEASUREMENTS */
 
 .measurement-panel {
     background: linear-gradient(
@@ -318,9 +349,7 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* -----------------------------------------------------
-   MODEL EVALUATION HEADER
------------------------------------------------------ */
+/* MODEL EVALUATION HEADER */
 
 .evaluation-header {
     background: linear-gradient(
@@ -353,9 +382,7 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* -----------------------------------------------------
-   METRIC CARDS
------------------------------------------------------ */
+/* EVALUATION METRIC CARDS */
 
 div[data-testid="stMetric"] {
     background: linear-gradient(
@@ -367,29 +394,23 @@ div[data-testid="stMetric"] {
 
     padding: 20px;
 
+    border-radius: 15px;
+
     border: 1px solid #303030;
 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
-}
-
-/* Force all metric text to white */
-
-div[data-testid="stMetric"] * {
-    color: #FFFFFF !important;
 }
 
 div[data-testid="stMetric"] label {
     color: #D4D4D4 !important;
 }
 
-div[data-testid="stMetricValue"] {
+div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     color: #FFFFFF !important;
 }
 
 
-/* -----------------------------------------------------
-   CONFUSION MATRIX
------------------------------------------------------ */
+/* CONFUSION MATRIX */
 
 .confusion-title {
     color: #111827 !important;
@@ -404,9 +425,7 @@ div[data-testid="stMetricValue"] {
 }
 
 
-/* -----------------------------------------------------
-   GENERAL
------------------------------------------------------ */
+/* CAPTIONS */
 
 .stApp [data-testid="stCaptionContainer"] {
     color: #374151;
@@ -429,157 +448,311 @@ def load_data():
 def load_model():
     return joblib.load(MODEL_PATH)
 
+
 @st.cache_data
 def load_metrics():
     return json.loads(
         METRICS_PATH.read_text(encoding="utf-8")
     )
 
+
+# ---------------------------------------------------------
+# PAGE HEADER
+# ---------------------------------------------------------
+
 render_html("""
 <div class="hero">
+
     <h1 style="text-align: center;">
         UI Created By Ali Jamil
     </h1>
+
     <h1 style="text-align: center;">
         💧 Water Potability Prediction
     </h1>
+
     <p style="text-align: center;">
         Machine-learning dashboard • Random Forest binary classification
         • Prediction classes: 0 and 1
     </p>
+
 </div>
 """)
+
+
+# ---------------------------------------------------------
+# CHECK REQUIRED FILES
+# ---------------------------------------------------------
 
 missing_files = [
     path.name
     for path in [DATA_PATH, MODEL_PATH, METRICS_PATH]
     if not path.exists()
 ]
+
 if missing_files:
+
     st.error(
         "Required project files are missing: "
         + ", ".join(missing_files)
         + ". Check your data/ and models/ folders."
     )
+
     st.stop()
+
+
+# ---------------------------------------------------------
+# LOAD PROJECT RESOURCES
+# ---------------------------------------------------------
 
 df = load_data()
 model = load_model()
 metrics = load_metrics()
 
+
+# ---------------------------------------------------------
+# SIDEBAR INPUTS
+# ---------------------------------------------------------
+
 values = {}
+
 with st.sidebar:
+
     st.header("💧 Water-quality inputs")
+
     st.caption(
         "Enter the water measurements below."
     )
+
     st.divider()
+
     for feature in FEATURES:
+
         series = df[feature].dropna()
+
         default_value = float(series.median())
+
         observed_min = float(series.min())
         observed_max = float(series.max())
+
         values[feature] = st.number_input(
             FRIENDLY_NAMES[feature],
+
             value=default_value,
+
             step=max(
                 (observed_max - observed_min) / 100,
                 0.01
             ),
-            format="%.4f",
-            help=(
-                f"Observed dataset range: "
-                f"{observed_min:.3f} to {observed_max:.3f}"
-            )
+
+            format="%.4f"
         )
+
+        st.markdown(
+            f"""
+            <div class="range-info">
+                Observed range:
+                <span>{observed_min:.3f}</span>
+                to
+                <span>{observed_max:.3f}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ---------------------------------------------------------
+# PREPARE INPUT DATA
+# ---------------------------------------------------------
 
 input_df = pd.DataFrame(
     [values],
     columns=FEATURES
 )
 
+
+# ---------------------------------------------------------
+# PREDICTION BUTTON AND INPUT MEASUREMENTS
+# ---------------------------------------------------------
+
 st.subheader("Water sample prediction")
+
 predict_col, input_col = st.columns([1.05, 1])
 
+
+# ---------------------------------------------------------
+# PREDICTION BUTTON
+# ---------------------------------------------------------
+
 with predict_col:
+
     st.write(
-        "Click the button below to predict water potability."
+        "Enter the measurements and click the button to predict water potability."
     )
+
     predict_clicked = st.button(
         "Predict Potability",
         type="primary",
         use_container_width=True
     )
+
     if predict_clicked:
+
         predicted_class = int(
             model.predict(input_df)[0]
         )
+
+        probabilities = model.predict_proba(input_df)[0]
+
+        class_probabilities = {
+            int(label): float(probability)
+            for label, probability in zip(
+                model.classes_,
+                probabilities
+            )
+        }
+
         st.session_state["last_prediction"] = predicted_class
 
-    if "last_prediction" in st.session_state:
-        predicted_class = st.session_state["last_prediction"]
-        if predicted_class == 1:
-            render_html("""
-            <div class="prediction-panel">
-                <div class="status-potable">
-                    ✓ WATER IS POTABLE
-                </div>
-                <h3>Prediction Result</h3>
-                <p>
-                    The machine-learning model classifies
-                    this water sample as potable.
-                </p>
-            </div>
-            """)
-        else:
-            render_html("""
-            <div class="prediction-panel">
-                <div class="status-not-potable">
-                    ✕ WATER IS NOT POTABLE
-                </div>
-                <h3>Prediction Result</h3>
-                <p>
-                    The machine-learning model classifies
-                    this water sample as not potable.
-                </p>
-            </div>
-            """)
-        st.caption(
-            "Model prediction only. This result does not "
-            "guarantee drinking-water safety."
-        )
+        st.session_state["last_probabilities"] = {
+            "potable": class_probabilities.get(1, 0.0),
+            "not_potable": class_probabilities.get(0, 0.0)
+        }
+
+
+# ---------------------------------------------------------
+# CURRENT INPUT MEASUREMENTS
+# ---------------------------------------------------------
 
 with input_col:
+
     measurement_rows = ""
+
     for feature in FEATURES:
+
         label = FRIENDLY_NAMES[feature]
         value = values[feature]
+
         measurement_rows += (
             f"<tr>"
             f"<td>{label}</td>"
             f"<td>{value:,.4f}</td>"
             f"</tr>"
         )
+
     render_html(f"""
     <div class="measurement-panel">
+
         <h3>Current input measurements</h3>
+
         <table>
+
             <thead>
                 <tr>
                     <th>Measurement</th>
                     <th>Entered value</th>
                 </tr>
             </thead>
+
             <tbody>
                 {measurement_rows}
             </tbody>
+
         </table>
+
     </div>
     """)
 
 
+# ---------------------------------------------------------
+# PREDICTION RESULT - SEPARATE ROW
+# ---------------------------------------------------------
+
+if "last_prediction" in st.session_state:
+
+    predicted_class = st.session_state["last_prediction"]
+
+    probabilities = st.session_state["last_probabilities"]
+
+    st.markdown(
+        '<div style="margin-top:25px;"></div>',
+        unsafe_allow_html=True
+    )
+
+    if predicted_class == 1:
+
+        render_html("""
+        <div class="prediction-panel prediction-success">
+
+            <h2>✓ Water is good for health and drinkable</h2>
+
+            <p>
+                The Random Forest model classifies this sample
+                as potable water.
+            </p>
+
+        </div>
+        """)
+
+    else:
+
+        render_html("""
+        <div class="prediction-panel prediction-error">
+
+            <h2>✕ Water is not drinkable and dangerous for health</h2>
+
+            <p>
+                The Random Forest model classifies this sample
+                as non-potable water.
+            </p>
+
+        </div>
+        """)
+
+    # Probability figures
+
+    probability_col1, probability_col2 = st.columns(2)
+
+    with probability_col1:
+
+        render_html(f"""
+        <div class="probability-card">
+
+            <h4>Potable Probability</h4>
+
+            <h2>{probabilities['potable'] * 100:.2f}%</h2>
+
+            <p>Class 1 - Drinkable</p>
+
+        </div>
+        """)
+
+    with probability_col2:
+
+        render_html(f"""
+        <div class="probability-card">
+
+            <h4>Non-Potable Probability</h4>
+
+            <h2>{probabilities['not_potable'] * 100:.2f}%</h2>
+
+            <p>Class 0 - Not drinkable</p>
+
+        </div>
+        """)
+
+    st.caption(
+        "These percentages are model estimates, not laboratory measurements. "
+        "A prediction alone cannot establish drinking-water safety."
+    )
+
+
 st.divider()
 
+
+# ---------------------------------------------------------
+# MODEL EVALUATION HEADER
+# ---------------------------------------------------------
 
 render_html("""
 <div class="evaluation-header">
@@ -592,6 +765,11 @@ render_html("""
 
 </div>
 """)
+
+
+# ---------------------------------------------------------
+# MODEL EVALUATION METRICS
+# ---------------------------------------------------------
 
 metric_cols = st.columns(4)
 
@@ -614,6 +792,11 @@ metric_cols[3].metric(
     "F1-score",
     f"{metrics['f1_score'] * 100:.2f}%"
 )
+
+
+# ---------------------------------------------------------
+# RANDOM FOREST CONFUSION MATRIX
+# ---------------------------------------------------------
 
 render_html("""
 <div class="confusion-title">
@@ -667,7 +850,13 @@ with center_col:
         fig,
         use_container_width=True
     )
+
 plt.close(fig)
+
+
+# ---------------------------------------------------------
+# PROJECT INFORMATION AND LIMITATIONS
+# ---------------------------------------------------------
 
 with st.expander(
     "About this project and its limitations"

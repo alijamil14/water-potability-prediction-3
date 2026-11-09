@@ -1,21 +1,43 @@
 from pathlib import Path
 import json
+
 import joblib
 import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+
 from sklearn.metrics import ConfusionMatrixDisplay
 
+
+# ---------------------------------------------------------
+# PROJECT PATHS
+# ---------------------------------------------------------
+
 ROOT = Path(__file__).resolve().parent
+
 DATA_PATH = ROOT / "data" / "water_potability.csv"
 MODEL_PATH = ROOT / "models" / "water_potability_model.pkl"
 METRICS_PATH = ROOT / "models" / "evaluation_metrics.json"
 
+
+# ---------------------------------------------------------
+# DATASET FEATURES
+# ---------------------------------------------------------
+
 FEATURES = [
-    "ph", "Hardness", "Solids", "Chloramines", "Sulfate",
-    "Conductivity", "Organic_carbon", "Trihalomethanes", "Turbidity"
+    "ph",
+    "Hardness",
+    "Solids",
+    "Chloramines",
+    "Sulfate",
+    "Conductivity",
+    "Organic_carbon",
+    "Trihalomethanes",
+    "Turbidity",
 ]
+
+
 FRIENDLY_NAMES = {
     "ph": "pH",
     "Hardness": "Hardness",
@@ -25,396 +47,742 @@ FRIENDLY_NAMES = {
     "Conductivity": "Conductivity",
     "Organic_carbon": "Organic carbon",
     "Trihalomethanes": "Trihalomethanes",
-    "Turbidity": "Turbidity"
+    "Turbidity": "Turbidity",
 }
+
+
+# ---------------------------------------------------------
+# STREAMLIT CONFIGURATION
+# ---------------------------------------------------------
 
 st.set_page_config(
     page_title="Water Potability | ML Dashboard",
     page_icon="💧",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
-# Custom styling: colors are also defined in .streamlit/config.toml.
-st.markdown("""
-<style>
-.stApp {
-    background: linear-gradient(
-        135deg,
-        #F0FAFC 0%,
-        #E1F5F8 50%,
-        #F4FBFC 100%
-    );
-    color: #111827;
-}
-/* Main screen text */
-.stApp p,
-.stApp label,
-.stApp h1,
-.stApp h2,
-.stApp h3,
-.stApp h4,
-.stApp span {
-    color: #111827;
-}
-.hero {
-    padding: 35px 25px;
-    border-radius: 50px;
 
-    background: linear-gradient(
-        120deg,
-        #075985 0%,
-        #0891B2 45%,
-        #2DD4BF 100%
-    );
-    color: white !important;
-    margin-bottom: 30px;
+# ---------------------------------------------------------
+# CUSTOM CSS
+# ---------------------------------------------------------
 
-    box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
-}
-.hero h1 {
-    color: #FFFFFF !important;
-    font-size: 2.1rem;
-    margin-bottom: 12px;
-}
-.hero p {
-    color: #E0F7FA !important;
-    font-size: 1rem;
-}
-[data-testid="stSidebar"] {
-    background: linear-gradient(
-        160deg,
-        #075985 0%,
-        #0891B2 50%,
-        #2DD4BF 100%
-    );
-}
-[data-testid="stSidebar"] * {
-    color: #FFFFFF !important;
-}
-/* Sidebar input text */
-[data-testid="stSidebar"] input {
-    background-color: #FFFFFF !important;
-    color: #111827 !important;
-    border-radius: 12px;
-}
-/* Sidebar number input buttons */
-[data-testid="stSidebar"] [data-testid="stNumberInput"] button {
-    background-color: #111827 !important;
-    color: #FFFFFF !important;
-}
-.st-key-water_input_group {
-    background: linear-gradient(
-        145deg,
-        #075985 0%,
-        #0891B2 55%,
-        #2DD4BF 100%
-    );
-    padding: 25px 18px;
-    border-radius: 100px;
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-.prediction-success {
-    background: linear-gradient(
-        120deg,
-        #047857,
-        #0D9488,
-        #2DD4BF
-    );
-    color: white !important;
-    padding: 25px;
-    border-radius: 30px;
-    margin: 20px 0;
-    border: 1px solid #5EEAD4;
-    font-size: 18px;
-    font-weight: 700;
-}
-.prediction-error {
-    background: linear-gradient(
-        120deg,
-        #075985,
-        #0369A1,
-        #0891B2
-    );
-    color: white !important;
-    padding: 25px;
-    border-radius: 30px;
-    margin: 20px 0;
-    border: 1px solid #38BDF8;
-    font-size: 18px;
-    font-weight: 700;
-}
-.probability-card {
-    background: linear-gradient(
-        135deg,
-        #075985,
-        #0891B2,
-        #164E63
-    );
-    padding: 25px;
-    border-radius: 30px;
-    margin: 10px 0;
-    text-align: center;
-    color: white !important;
-}
-.probability-card h4,
-.probability-card h2,
-.probability-card p {
-    color: white !important;
-}
-.st-key-input_measurements {
-    background: linear-gradient(
-        135deg,
-        #111827 0%,
-        #374151 55%,
-        #1F2937 100%
-    );
+st.markdown(
+    """
+    <style>
 
-    padding: 25px;
-    border-radius: 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-.st-key-input_measurements p,
-.st-key-input_measurements h2,
-.st-key-input_measurements h3 {
-    color: #FFFFFF !important;
-}
-div[data-testid="stMetric"] {
-    background: linear-gradient(
-        135deg,
-        #111827,
-        #374151,
-        #1F2937
-    );
-    padding: 22px;
-    border-radius: 30px;
-    border: 1px solid #4B5563;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-div[data-testid="stMetric"] label,
-div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-    color: #FFFFFF !important;
-}
-div.stButton > button[kind="primary"] {
-    background-color: #111827 !important;
-    color: #FFFFFF !important;
-    border: 1px solid #111827 !important;
-    border-radius: 15px;
-    font-weight: 700;
-    min-height: 3rem;
-}
-div.stButton > button[kind="primary"]:hover {
-    background-color: #374151 !important;
-    color: #FFFFFF !important;
-}
-[data-testid="stNumberInput"] input {
-    background-color: #FFFFFF !important;
-    color: #111827 !important;
-    border: 1px solid #111827 !important;
-}
-[data-testid="stNumberInput"] button {
-    background-color: #111827 !important;
-    color: #FFFFFF !important;
-}
-div[data-testid="stDataFrame"] {
-    border-radius: 15px;
-    overflow: hidden;
-}
-.stCaption {
-    color: #374151 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+    /* Main application background */
+
+    .stApp {
+        background: linear-gradient(
+            135deg,
+            #F0FAFC 0%,
+            #E1F5F8 50%,
+            #F4FBFC 100%
+        );
+
+        color: #111827;
+    }
+
+
+    /* Main page typography */
+
+    .stApp h1,
+    .stApp h2,
+    .stApp h3,
+    .stApp h4,
+    .stApp p,
+    .stApp label {
+        color: #111827;
+    }
+
+
+    /* Hero section */
+
+    .hero {
+        padding: 32px 24px;
+
+        background: linear-gradient(
+            120deg,
+            #075985 0%,
+            #0891B2 45%,
+            #2DD4BF 100%
+        );
+
+        margin-bottom: 28px;
+
+        box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
+    }
+
+    .hero h1 {
+        color: #FFFFFF !important;
+        font-size: 2.1rem;
+        margin: 8px 0;
+    }
+
+    .hero p {
+        color: #E0F7FA !important;
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+
+    /* -----------------------------------------------------
+       SIDEBAR
+    ----------------------------------------------------- */
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(
+            160deg,
+            #075985 0%,
+            #0891B2 50%,
+            #2DD4BF 100%
+        );
+    }
+
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] span {
+        color: #FFFFFF !important;
+    }
+
+    /* Sidebar number inputs */
+
+    [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
+        background-color: #FFFFFF !important;
+        color: #111827 !important;
+        border: 1px solid #111827 !important;
+        border-radius: 5px !important;
+    }
+
+    /* Sidebar plus and minus buttons */
+
+    [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
+        background-color: #111827 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #111827 !important;
+    }
+
+    /* Remove additional sidebar container styling */
+
+    [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       PREDICTION BUTTON
+    ----------------------------------------------------- */
+
+    div.stButton > button[kind="primary"] {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #000000 !important;
+        border-radius: 5px !important;
+        font-weight: 700 !important;
+        min-height: 3rem;
+    }
+
+    div.stButton > button[kind="primary"]:hover {
+        background-color: #252525 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #252525 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       PREDICTION RESULT PANEL
+    ----------------------------------------------------- */
+
+    .prediction-panel {
+        background: linear-gradient(
+            135deg,
+            #050505 0%,
+            #242424 55%,
+            #101010 100%
+        );
+
+        padding: 25px;
+        margin-top: 18px;
+        margin-bottom: 18px;
+
+        color: #FFFFFF !important;
+
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20);
+    }
+
+    .prediction-panel h3 {
+        color: #FFFFFF !important;
+        margin-top: 0;
+    }
+
+    .prediction-panel p {
+        color: #E5E5E5 !important;
+        margin-bottom: 0;
+    }
+
+    .status-potable {
+        display: inline-block;
+
+        background: #15803D;
+        color: #FFFFFF !important;
+
+        padding: 10px 18px;
+        margin-bottom: 15px;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .status-not-potable {
+        display: inline-block;
+
+        background: #DC2626;
+        color: #FFFFFF !important;
+
+        padding: 10px 18px;
+        margin-bottom: 15px;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+
+    /* -----------------------------------------------------
+       CURRENT INPUT MEASUREMENTS
+    ----------------------------------------------------- */
+
+    .measurement-panel {
+        background: linear-gradient(
+            135deg,
+            #000000 0%,
+            #252525 55%,
+            #101010 100%
+        );
+
+        padding: 22px;
+        margin-bottom: 20px;
+
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
+    }
+
+    .measurement-panel h3 {
+        color: #FFFFFF !important;
+        margin-top: 0;
+    }
+
+    .measurement-panel table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #FFFFFF !important;
+    }
+
+    .measurement-panel th {
+        background: #292929;
+        color: #FFFFFF !important;
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid #555555;
+    }
+
+    .measurement-panel td {
+        background: #151515;
+        color: #FFFFFF !important;
+        padding: 11px 12px;
+        border-bottom: 1px solid #383838;
+    }
+
+
+    /* -----------------------------------------------------
+       MODEL EVALUATION HEADER
+    ----------------------------------------------------- */
+
+    .evaluation-header {
+        background: linear-gradient(
+            135deg,
+            #000000 0%,
+            #292929 55%,
+            #101010 100%
+        );
+
+        padding: 25px;
+        margin-top: 25px;
+        margin-bottom: 22px;
+
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
+    }
+
+    .evaluation-header h2 {
+        color: #FFFFFF !important;
+        margin: 0;
+        text-align: center;
+    }
+
+    .evaluation-header p {
+        color: #D4D4D4 !important;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+
+    /* -----------------------------------------------------
+       EVALUATION METRIC CARDS
+    ----------------------------------------------------- */
+
+    div[data-testid="stMetric"] {
+        background: linear-gradient(
+            135deg,
+            #000000 0%,
+            #151515 55%,
+            #080808 100%
+        );
+
+        padding: 20px;
+
+        border: 1px solid #292929;
+
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
+    }
+
+    div[data-testid="stMetric"] label {
+        color: #D4D4D4 !important;
+    }
+
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #FFFFFF !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CONFUSION MATRIX
+    ----------------------------------------------------- */
+
+    .confusion-title {
+        color: #111827 !important;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+
+
+    /* Captions */
+
+    .stApp [data-testid="stCaptionContainer"] {
+        color: #374151;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ---------------------------------------------------------
+# LOAD DATA
+# ---------------------------------------------------------
 
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_PATH)
 
+
 @st.cache_resource
 def load_model():
-    # Only load trusted model files that you created.
     return joblib.load(MODEL_PATH)
+
 
 @st.cache_data
 def load_metrics():
-    return json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+    return json.loads(
+        METRICS_PATH.read_text(encoding="utf-8")
+    )
 
-st.markdown("""
-<div class="hero">
 
-    <h1 style="text-align: center;">
-        UI Created By Ali Jamil
-    </h1>
+# ---------------------------------------------------------
+# PAGE HEADER
+# ---------------------------------------------------------
 
-    <h1 style="text-align: center;">
-        💧 Water Potability Prediction
-    </h1>
+st.markdown(
+    """
+    <div class="hero">
 
-    <p style="text-align: center;">
-        Machine-learning dashboard • Random Forest binary classification
-        • Prediction classes: 0 and 1
-    </p>
+        <h1 style="text-align: center;">
+            UI Created By Ali Jamil
+        </h1>
 
-</div>
-""", unsafe_allow_html=True)
+        <h1 style="text-align: center;">
+            💧 Water Potability Prediction
+        </h1>
+
+        <p style="text-align: center;">
+            Machine-learning dashboard • Random Forest binary classification
+            • Prediction classes: 0 and 1
+        </p>
+
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ---------------------------------------------------------
+# CHECK REQUIRED FILES
+# ---------------------------------------------------------
 
 missing_files = [
-    path.name for path in [DATA_PATH, MODEL_PATH, METRICS_PATH]
+    path.name
+    for path in [DATA_PATH, MODEL_PATH, METRICS_PATH]
     if not path.exists()
 ]
+
 if missing_files:
+
     st.error(
         "Required project files are missing: "
         + ", ".join(missing_files)
-        + ". Check the data/ and models/ folders."
+        + ". Check your data/ and models/ folders."
     )
+
     st.stop()
+
+
+# ---------------------------------------------------------
+# LOAD PROJECT RESOURCES
+# ---------------------------------------------------------
 
 df = load_data()
 model = load_model()
 metrics = load_metrics()
+
+
+# ---------------------------------------------------------
+# SIDEBAR INPUTS
+# ---------------------------------------------------------
+
 values = {}
-with st.sidebar.container(key="water_input_group"):
+
+with st.sidebar:
 
     st.header("💧 Water-quality inputs")
+
     st.caption(
-        "Enter measurements, then run the prediction."
+        "Enter the water measurements below."
     )
+
+    st.divider()
+
     for feature in FEATURES:
+
         series = df[feature].dropna()
+
         default_value = float(series.median())
+
         observed_min = float(series.min())
         observed_max = float(series.max())
+
         values[feature] = st.number_input(
             FRIENDLY_NAMES[feature],
+
             value=default_value,
-            step=max((observed_max - observed_min) / 100, 0.01),
+
+            step=max(
+                (observed_max - observed_min) / 100,
+                0.01
+            ),
+
             format="%.4f",
-            help=f"Observed dataset range: {observed_min:.3f} to {observed_max:.3f}"
+
+            help=(
+                f"Observed dataset range: "
+                f"{observed_min:.3f} to {observed_max:.3f}"
+            )
         )
 
-input_df = pd.DataFrame([values], columns=FEATURES)
+
+# ---------------------------------------------------------
+# PREPARE INPUT DATA
+# ---------------------------------------------------------
+
+input_df = pd.DataFrame(
+    [values],
+    columns=FEATURES
+)
+
+
+# ---------------------------------------------------------
+# PREDICTION AND INPUT MEASUREMENTS
+# ---------------------------------------------------------
 
 st.subheader("Water sample prediction")
+
 predict_col, input_col = st.columns([1.05, 1])
+
+
+# ---------------------------------------------------------
+# PREDICTION SECTION
+# ---------------------------------------------------------
 
 with predict_col:
 
-    st.write("Run the trained model on the values entered in the sidebar.")
+    st.write(
+        "Click the button below to predict water potability."
+    )
 
-    if st.button("Predict potability", type="primary", use_container_width=True):
+    predict_clicked = st.button(
+        "Predict Potability",
+        type="primary",
+        use_container_width=True
+    )
 
-        predicted_class = int(model.predict(input_df)[0])
-        probabilities = model.predict_proba(input_df)[0]
+    # Run prediction when the button is clicked.
 
-        class_to_probability = {
-            int(label): float(probability)
-            for label, probability in zip(model.classes_, probabilities)
-        }
+    if predict_clicked:
 
-        potable_probability = class_to_probability.get(1, 0.0)
-        not_potable_probability = class_to_probability.get(0, 0.0)
+        predicted_class = int(
+            model.predict(input_df)[0]
+        )
 
         st.session_state["last_prediction"] = predicted_class
-        st.session_state["last_probabilities"] = {
-            "potable": potable_probability,
-            "not_potable": not_potable_probability
-        }
-    # Display prediction result
-        if "last_prediction" in st.session_state:
 
-            predicted_class = st.session_state["last_prediction"]
-            probs = st.session_state["last_probabilities"]
+    # Display the latest prediction below the button.
 
-    # Successful prediction
+    if "last_prediction" in st.session_state:
+
+        predicted_class = st.session_state["last_prediction"]
+
         if predicted_class == 1:
-            st.markdown("""
-        <div class="prediction-success">
-            ✅ WATER IS POTABLE
-            <br><br>
-            Water is classified as potable by the machine-learning model.
-        </div>
-        """, unsafe_allow_html=True)
 
-    # Unsuccessful prediction
+            st.markdown(
+                """
+                <div class="prediction-panel">
+
+                    <div class="status-potable">
+                        ✓ WATER IS POTABLE
+                    </div>
+
+                    <h3>Prediction Result</h3>
+
+                    <p>
+                        The machine-learning model classifies
+                        this water sample as potable.
+                    </p>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
         else:
-            st.markdown("""
-            <div class="prediction-error">
-            ⚠️ WATER IS NOT POTABLE
-            <br><br>
-            Water is classified as not potable by the machine-learning model.
-            </div>
-            """, unsafe_allow_html=True)
-    # Probability cards
-    prob1, prob2 = st.columns(2)
-    with prob1:
-        st.markdown(f"""
-        <div class="probability-card">
-            <h4>Estimated class 1 probability</h4>
-            <h2>{probs['potable'] * 100:.1f}%</h2>
-            <p>Potable</p>
-        </div>
-        """, unsafe_allow_html=True)
-        with prob2:
-        st.markdown(f"""
-        <div class="probability-card">
-            <h4>Estimated class 0 probability</h4>
-            <h2>{probs['not_potable'] * 100:.1f}%</h2>
-            <p>Not Potable</p>
-        </div>
-        """, unsafe_allow_html=True)
-    st.caption(
-        "Model estimates only. These results do not guarantee drinking-water safety."
-    )
-else:
-st.info(
-        "Enter the sample measurements in the sidebar and click Predict Potability."
-    )
 
+            st.markdown(
+                """
+                <div class="prediction-panel">
 
-    with input_col:
+                    <div class="status-not-potable">
+                        ✕ WATER IS NOT POTABLE
+                    </div>
 
-        with st.container(key="input_measurements"):
+                    <h3>Prediction Result</h3>
 
-        st.markdown("### 📋 Current input measurements")
+                    <p>
+                        The machine-learning model classifies
+                        this water sample as not potable.
+                    </p>
 
-        display_input = input_df.rename(
-            columns=FRIENDLY_NAMES
-        ).T
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-        display_input.columns = ["Entered value"]
-
-        st.dataframe(
-            display_input,
-            use_container_width=True
+        st.caption(
+            "This is a machine-learning estimate and does not "
+            "guarantee drinking-water safety."
         )
-        
-st.divider()
-st.header("Model evaluation on the held-out test set")
-metric_cols = st.columns(4)
-metric_cols[0].metric("Accuracy", f"{metrics['accuracy'] * 100:.2f}%")
-metric_cols[1].metric("Precision", f"{metrics['precision'] * 100:.2f}%")
-metric_cols[2].metric("Recall", f"{metrics['recall'] * 100:.2f}%")
-metric_cols[3].metric("F1-score", f"{metrics['f1_score'] * 100:.2f}%")
 
-cm = np.asarray(metrics["confusion_matrix"], dtype=int)
-fig, ax = plt.subplots(figsize=(6.5, 4.5))
+
+# ---------------------------------------------------------
+# CURRENT INPUT MEASUREMENTS
+# ---------------------------------------------------------
+
+with input_col:
+
+    measurement_rows = ""
+
+    for feature in FEATURES:
+
+        label = FRIENDLY_NAMES[feature]
+        value = values[feature]
+
+        measurement_rows += f"""
+            <tr>
+                <td>{label}</td>
+                <td>{value:,.4f}</td>
+            </tr>
+        """
+
+    st.markdown(
+        f"""
+        <div class="measurement-panel">
+
+            <h3>Current input measurements</h3>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Measurement</th>
+                        <th>Entered value</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {measurement_rows}
+                </tbody>
+
+            </table>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+st.divider()
+
+
+# ---------------------------------------------------------
+# MODEL EVALUATION HEADER
+# ---------------------------------------------------------
+
+st.markdown(
+    """
+    <div class="evaluation-header">
+
+        <h2>📊 Model Evaluation</h2>
+
+        <p>
+            Performance on the held-out test dataset
+        </p>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# ---------------------------------------------------------
+# MODEL EVALUATION METRICS
+# ---------------------------------------------------------
+
+metric_cols = st.columns(4)
+
+metric_cols[0].metric(
+    "Accuracy",
+    f"{metrics['accuracy'] * 100:.2f}%"
+)
+
+metric_cols[1].metric(
+    "Precision",
+    f"{metrics['precision'] * 100:.2f}%"
+)
+
+metric_cols[2].metric(
+    "Recall",
+    f"{metrics['recall'] * 100:.2f}%"
+)
+
+metric_cols[3].metric(
+    "F1-score",
+    f"{metrics['f1_score'] * 100:.2f}%"
+)
+
+
+# ---------------------------------------------------------
+# RANDOM FOREST CONFUSION MATRIX
+# ---------------------------------------------------------
+
+st.markdown(
+    """
+    <div class="confusion-title">
+        Random Forest Confusion Matrix
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+cm = np.asarray(
+    metrics["confusion_matrix"],
+    dtype=int
+)
+
+# Create a smaller confusion matrix.
+
+fig, ax = plt.subplots(
+    figsize=(4.2, 3.2),
+    dpi=120
+)
+
 ConfusionMatrixDisplay(
     confusion_matrix=cm,
-    display_labels=["Not potable (0)", "Potable (1)"]
-).plot(ax=ax, cmap="GnBu", colorbar=False, values_format="d")
-ax.set_title("Random Forest confusion matrix")
+    display_labels=[
+        "Not potable (0)",
+        "Potable (1)"
+    ]
+).plot(
+    ax=ax,
+    cmap="GnBu",
+    colorbar=False,
+    values_format="d"
+)
+
+ax.set_title(
+    "Random Forest",
+    fontsize=11,
+    pad=12
+)
+
+ax.tick_params(
+    axis="both",
+    labelsize=8
+)
+
 fig.tight_layout()
-st.pyplot(fig, use_container_width=True)
+
+# Center the confusion matrix.
+
+left_col, center_col, right_col = st.columns(
+    [1, 1.5, 1]
+)
+
+with center_col:
+
+    st.pyplot(
+        fig,
+        use_container_width=True
+    )
+
 plt.close(fig)
 
-with st.expander("About this project and its limitations"):
+
+# ---------------------------------------------------------
+# PROJECT INFORMATION AND LIMITATIONS
+# ---------------------------------------------------------
+
+with st.expander(
+    "About this project and its limitations"
+):
+
     st.write(
         "This educational application uses a Random Forest classifier. "
         "The target is Potability: 0 means not potable and 1 means potable. "
-        "Missing feature values are imputed using medians learned from the training data. "
-        "A model prediction must not replace accredited laboratory water testing "
-        "or public-health guidance."
+        "Missing feature values are imputed using medians learned from the "
+        "training data. A model prediction must not replace accredited "
+        "laboratory water testing or public-health guidance."
     )

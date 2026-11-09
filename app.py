@@ -329,7 +329,7 @@ with predict_col:
      probs = st.session_state["last_probabilities"]
 
     # Successful prediction
-    if predicted_class == 1:
+        if predicted_class == 1:
 
         st.markdown("""
         <div class="prediction-success">
@@ -340,8 +340,7 @@ with predict_col:
         """, unsafe_allow_html=True)
 
     # Unsuccessful prediction
-    else:
-
+         else:
         st.markdown("""
         <div class="prediction-error">
             ⚠️ WATER IS NOT POTABLE
@@ -349,10 +348,8 @@ with predict_col:
             Water is classified as not potable by the machine-learning model.
         </div>
         """, unsafe_allow_html=True)
-
     # Probability cards
     prob1, prob2 = st.columns(2)
-
     with prob1:
         st.markdown(f"""
         <div class="probability-card">
@@ -361,7 +358,6 @@ with predict_col:
             <p>Potable</p>
         </div>
         """, unsafe_allow_html=True)
-
     with prob2:
         st.markdown(f"""
         <div class="probability-card">
@@ -370,29 +366,33 @@ with predict_col:
             <p>Not Potable</p>
         </div>
         """, unsafe_allow_html=True)
-
     st.caption(
         "Model estimates only. These results do not guarantee drinking-water safety."
     )
 
     else:
-
     st.info(
         "Enter the sample measurements in the sidebar and click Predict Potability."
     )
 
 
 with input_col:
+
     with st.container(key="input_measurements"):
+
         st.markdown("### 📋 Current input measurements")
+
         display_input = input_df.rename(
             columns=FRIENDLY_NAMES
         ).T
+
         display_input.columns = ["Entered value"]
+
         st.dataframe(
             display_input,
             use_container_width=True
         )
+        
 st.divider()
 st.header("Model evaluation on the held-out test set")
 metric_cols = st.columns(4)

@@ -36,28 +36,11 @@ FRIENDLY_NAMES = {
     "Turbidity": "Turbidity",
 }
 
-
-
-
-
-# ---------------------------------------------------------
-
-# STREAMLIT CONFIGURATION
-
-# ---------------------------------------------------------
-
-
-
 st.set_page_config(
-
     page_title="Water Potability | ML Dashboard",
-
     page_icon="💧",
-
     layout="wide",
-
     initial_sidebar_state="expanded",
-
 )
 
 

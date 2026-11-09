@@ -363,14 +363,7 @@ def load_metrics():
 render_html("""
 <div class="hero">
     <h1 style="text-align: center; font-size: 50px;">UI Created By Ali Jamil</h1>
-
-
-
-    <h1 style="text-align: center;">
-
-        💧 Water Potability Prediction
-
-    </h1>
+    <h1 style="text-align: center; font-size: 50px;">💧 Water Potability Prediction</h1>
 
 
 

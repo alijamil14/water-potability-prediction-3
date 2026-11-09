@@ -1,4 +1,5 @@
 from pathlib import Path
+from textwrap import dedent
 import json
 
 import joblib
@@ -37,7 +38,6 @@ FEATURES = [
     "Turbidity",
 ]
 
-
 FRIENDLY_NAMES = {
     "ph": "pH",
     "Hardness": "Hardness",
@@ -64,324 +64,356 @@ st.set_page_config(
 
 
 # ---------------------------------------------------------
+# HTML RENDERING HELPER
+# ---------------------------------------------------------
+
+def render_html(content):
+    st.markdown(
+        dedent(content).strip(),
+        unsafe_allow_html=True
+    )
+
+
+# ---------------------------------------------------------
 # CUSTOM CSS
 # ---------------------------------------------------------
 
-st.markdown(
-    """
-    <style>
-
-    /* Main application background */
-
-    .stApp {
-        background: linear-gradient(
-            135deg,
-            #F0FAFC 0%,
-            #E1F5F8 50%,
-            #F4FBFC 100%
-        );
-
-        color: #111827;
-    }
-
-
-    /* Main page typography */
-
-    .stApp h1,
-    .stApp h2,
-    .stApp h3,
-    .stApp h4,
-    .stApp p,
-    .stApp label {
-        color: #111827;
-    }
-
-
-    /* Hero section */
-
-    .hero {
-        padding: 32px 24px;
-
-        background: linear-gradient(
-            120deg,
-            #075985 0%,
-            #0891B2 45%,
-            #2DD4BF 100%
-        );
-
-        margin-bottom: 28px;
-
-        box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
-    }
-
-    .hero h1 {
-        color: #FFFFFF !important;
-        font-size: 2.1rem;
-        margin: 8px 0;
-    }
-
-    .hero p {
-        color: #E0F7FA !important;
-        font-size: 1rem;
-        margin-bottom: 0;
-    }
-
-
-    /* -----------------------------------------------------
-       SIDEBAR
-    ----------------------------------------------------- */
-
-    [data-testid="stSidebar"] {
-        background: linear-gradient(
-            160deg,
-            #075985 0%,
-            #0891B2 50%,
-            #2DD4BF 100%
-        );
-    }
-
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] span {
-        color: #FFFFFF !important;
-    }
-
-    /* Sidebar number inputs */
-
-    [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
-        background-color: #FFFFFF !important;
-        color: #111827 !important;
-        border: 1px solid #111827 !important;
-        border-radius: 5px !important;
-    }
-
-    /* Sidebar plus and minus buttons */
-
-    [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
-        background-color: #111827 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #111827 !important;
-    }
-
-    /* Remove additional sidebar container styling */
-
-    [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-    }
+render_html("""
+<style>
+
+/* -----------------------------------------------------
+   MAIN APPLICATION
+----------------------------------------------------- */
+
+.stApp {
+    background: linear-gradient(
+        135deg,
+        #F0FAFC 0%,
+        #E1F5F8 50%,
+        #F4FBFC 100%
+    );
+
+    color: #111827;
+}
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4,
+.stApp p,
+.stApp label {
+    color: #111827;
+}
+
+
+/* -----------------------------------------------------
+   HERO SECTION
+----------------------------------------------------- */
+
+.hero {
+    padding: 35px 25px;
+
+    background: linear-gradient(
+        120deg,
+        #075985 0%,
+        #0891B2 45%,
+        #2DD4BF 100%
+    );
+
+    margin-bottom: 28px;
+
+    box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
+}
+
+.hero h1 {
+    color: #FFFFFF !important;
+    font-size: 2.1rem;
+    font-weight: 750;
+    margin: 8px 0;
+}
+
+.hero p {
+    color: #E0F7FA !important;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+
+/* -----------------------------------------------------
+   SIDEBAR
+----------------------------------------------------- */
+
+[data-testid="stSidebar"] {
+    background: linear-gradient(
+        160deg,
+        #075985 0%,
+        #0891B2 50%,
+        #2DD4BF 100%
+    );
+}
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span {
+    color: #FFFFFF !important;
+}
+
+/* Input fields */
+
+[data-testid="stSidebar"] [data-testid="stNumberInput"] input {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    border: 1px solid #111827 !important;
+    border-radius: 5px !important;
+}
+
+/* Plus and minus buttons */
+
+[data-testid="stSidebar"] [data-testid="stNumberInput"] button {
+    background: #111827 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #111827 !important;
+}
+
+
+/* -----------------------------------------------------
+   PREDICTION BUTTON
+----------------------------------------------------- */
 
+div.stButton > button[kind="primary"] {
+    background: #000000 !important;
+    color: #FFFFFF !important;
 
-    /* -----------------------------------------------------
-       PREDICTION BUTTON
-    ----------------------------------------------------- */
+    border: 1px solid #000000 !important;
+    border-radius: 5px !important;
 
-    div.stButton > button[kind="primary"] {
-        background-color: #000000 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #000000 !important;
-        border-radius: 5px !important;
-        font-weight: 700 !important;
-        min-height: 3rem;
-    }
-
-    div.stButton > button[kind="primary"]:hover {
-        background-color: #252525 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #252525 !important;
-    }
-
-
-    /* -----------------------------------------------------
-       PREDICTION RESULT PANEL
-    ----------------------------------------------------- */
-
-    .prediction-panel {
-        background: linear-gradient(
-            135deg,
-            #050505 0%,
-            #242424 55%,
-            #101010 100%
-        );
-
-        padding: 25px;
-        margin-top: 18px;
-        margin-bottom: 18px;
-
-        color: #FFFFFF !important;
-
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20);
-    }
-
-    .prediction-panel h3 {
-        color: #FFFFFF !important;
-        margin-top: 0;
-    }
-
-    .prediction-panel p {
-        color: #E5E5E5 !important;
-        margin-bottom: 0;
-    }
-
-    .status-potable {
-        display: inline-block;
-
-        background: #15803D;
-        color: #FFFFFF !important;
-
-        padding: 10px 18px;
-        margin-bottom: 15px;
-
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .status-not-potable {
-        display: inline-block;
-
-        background: #DC2626;
-        color: #FFFFFF !important;
-
-        padding: 10px 18px;
-        margin-bottom: 15px;
-
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-
-    /* -----------------------------------------------------
-       CURRENT INPUT MEASUREMENTS
-    ----------------------------------------------------- */
-
-    .measurement-panel {
-        background: linear-gradient(
-            135deg,
-            #000000 0%,
-            #252525 55%,
-            #101010 100%
-        );
-
-        padding: 22px;
-        margin-bottom: 20px;
-
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
-    }
-
-    .measurement-panel h3 {
-        color: #FFFFFF !important;
-        margin-top: 0;
-    }
-
-    .measurement-panel table {
-        width: 100%;
-        border-collapse: collapse;
-        color: #FFFFFF !important;
-    }
-
-    .measurement-panel th {
-        background: #292929;
-        color: #FFFFFF !important;
-        text-align: left;
-        padding: 12px;
-        border-bottom: 1px solid #555555;
-    }
-
-    .measurement-panel td {
-        background: #151515;
-        color: #FFFFFF !important;
-        padding: 11px 12px;
-        border-bottom: 1px solid #383838;
-    }
-
-
-    /* -----------------------------------------------------
-       MODEL EVALUATION HEADER
-    ----------------------------------------------------- */
-
-    .evaluation-header {
-        background: linear-gradient(
-            135deg,
-            #000000 0%,
-            #292929 55%,
-            #101010 100%
-        );
-
-        padding: 25px;
-        margin-top: 25px;
-        margin-bottom: 22px;
-
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
-    }
-
-    .evaluation-header h2 {
-        color: #FFFFFF !important;
-        margin: 0;
-        text-align: center;
-    }
-
-    .evaluation-header p {
-        color: #D4D4D4 !important;
-        text-align: center;
-        margin-bottom: 0;
-    }
-
-
-    /* -----------------------------------------------------
-       EVALUATION METRIC CARDS
-    ----------------------------------------------------- */
-
-    div[data-testid="stMetric"] {
-        background: linear-gradient(
-            135deg,
-            #000000 0%,
-            #151515 55%,
-            #080808 100%
-        );
-
-        padding: 20px;
-
-        border: 1px solid #292929;
-
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
-    }
-
-    div[data-testid="stMetric"] label {
-        color: #D4D4D4 !important;
-    }
-
-    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: #FFFFFF !important;
-    }
-
-
-    /* -----------------------------------------------------
-       CONFUSION MATRIX
-    ----------------------------------------------------- */
-
-    .confusion-title {
-        color: #111827 !important;
-        text-align: center;
-        font-size: 22px;
-        font-weight: 700;
-        margin-top: 25px;
-        margin-bottom: 15px;
-    }
-
-
-    /* Captions */
-
-    .stApp [data-testid="stCaptionContainer"] {
-        color: #374151;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    font-weight: 700 !important;
+    min-height: 3rem;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    background: #252525 !important;
+    color: #FFFFFF !important;
+    border-color: #252525 !important;
+}
+
+
+/* -----------------------------------------------------
+   PREDICTION RESULT
+----------------------------------------------------- */
+
+.prediction-panel {
+    background: linear-gradient(
+        135deg,
+        #050505 0%,
+        #252525 55%,
+        #101010 100%
+    );
+
+    padding: 26px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+
+    color: #FFFFFF !important;
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20);
+}
+
+.prediction-panel h3 {
+    color: #FFFFFF !important;
+    margin-top: 0;
+}
+
+.prediction-panel p {
+    color: #E5E5E5 !important;
+    margin-bottom: 0;
+}
+
+.status-potable {
+    display: inline-block;
+
+    background: linear-gradient(
+        120deg,
+        #15803D,
+        #16A34A
+    );
+
+    color: #FFFFFF !important;
+
+    padding: 11px 18px;
+    margin-bottom: 16px;
+
+    font-size: 18px;
+    font-weight: 750;
+}
+
+.status-not-potable {
+    display: inline-block;
+
+    background: linear-gradient(
+        120deg,
+        #B91C1C,
+        #EF4444
+    );
+
+    color: #FFFFFF !important;
+
+    padding: 11px 18px;
+    margin-bottom: 16px;
+
+    font-size: 18px;
+    font-weight: 750;
+}
+
+
+/* -----------------------------------------------------
+   CURRENT INPUT MEASUREMENTS
+----------------------------------------------------- */
+
+.measurement-panel {
+    background: linear-gradient(
+        135deg,
+        #080808 0%,
+        #292929 55%,
+        #111111 100%
+    );
+
+    padding: 24px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
+}
+
+.measurement-panel h3 {
+    color: #FFFFFF !important;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.measurement-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #FFFFFF !important;
+}
+
+.measurement-panel th {
+    background: #303030;
+    color: #FFFFFF !important;
+
+    text-align: left;
+    padding: 12px;
+
+    border-bottom: 1px solid #555555;
+}
+
+.measurement-panel td {
+    background: #171717;
+    color: #FFFFFF !important;
+
+    padding: 11px 12px;
+
+    border-bottom: 1px solid #383838;
+}
+
+
+/* -----------------------------------------------------
+   MODEL EVALUATION HEADER
+----------------------------------------------------- */
+
+.evaluation-header {
+    background: linear-gradient(
+        135deg,
+        #050505 0%,
+        #292929 55%,
+        #101010 100%
+    );
+
+    padding: 27px;
+
+    margin-top: 25px;
+    margin-bottom: 22px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
+}
+
+.evaluation-header h2 {
+    color: #FFFFFF !important;
+    margin: 0;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.evaluation-header p {
+    color: #D4D4D4 !important;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+
+/* -----------------------------------------------------
+   METRIC CARDS
+----------------------------------------------------- */
+
+div[data-testid="stMetric"] {
+    background: linear-gradient(
+        135deg,
+        #000000 0%,
+        #171717 55%,
+        #080808 100%
+    );
+
+    padding: 20px;
+
+    border: 1px solid #303030;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
+}
+
+/* Force all metric text to white */
+
+div[data-testid="stMetric"] * {
+    color: #FFFFFF !important;
+}
+
+div[data-testid="stMetric"] label {
+    color: #D4D4D4 !important;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #FFFFFF !important;
+}
+
+
+/* -----------------------------------------------------
+   CONFUSION MATRIX
+----------------------------------------------------- */
+
+.confusion-title {
+    color: #111827 !important;
+
+    text-align: center;
+
+    font-size: 22px;
+    font-weight: 750;
+
+    margin-top: 28px;
+    margin-bottom: 15px;
+}
+
+
+/* -----------------------------------------------------
+   GENERAL
+----------------------------------------------------- */
+
+.stApp [data-testid="stCaptionContainer"] {
+    color: #374151;
+}
+
+</style>
+""")
 
 
 # ---------------------------------------------------------
@@ -409,27 +441,24 @@ def load_metrics():
 # PAGE HEADER
 # ---------------------------------------------------------
 
-st.markdown(
-    """
-    <div class="hero">
+render_html("""
+<div class="hero">
 
-        <h1 style="text-align: center;">
-            UI Created By Ali Jamil
-        </h1>
+    <h1 style="text-align: center;">
+        UI Created By Ali Jamil
+    </h1>
 
-        <h1 style="text-align: center;">
-            💧 Water Potability Prediction
-        </h1>
+    <h1 style="text-align: center;">
+        💧 Water Potability Prediction
+    </h1>
 
-        <p style="text-align: center;">
-            Machine-learning dashboard • Random Forest binary classification
-            • Prediction classes: 0 and 1
-        </p>
+    <p style="text-align: center;">
+        Machine-learning dashboard • Random Forest binary classification
+        • Prediction classes: 0 and 1
+    </p>
 
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+</div>
+""")
 
 
 # ---------------------------------------------------------
@@ -517,7 +546,7 @@ input_df = pd.DataFrame(
 
 
 # ---------------------------------------------------------
-# PREDICTION AND INPUT MEASUREMENTS
+# PREDICTION AND MEASUREMENTS
 # ---------------------------------------------------------
 
 st.subheader("Water sample prediction")
@@ -541,8 +570,6 @@ with predict_col:
         use_container_width=True
     )
 
-    # Run prediction when the button is clicked.
-
     if predict_clicked:
 
         predicted_class = int(
@@ -559,50 +586,44 @@ with predict_col:
 
         if predicted_class == 1:
 
-            st.markdown(
-                """
-                <div class="prediction-panel">
+            render_html("""
+            <div class="prediction-panel">
 
-                    <div class="status-potable">
-                        ✓ WATER IS POTABLE
-                    </div>
-
-                    <h3>Prediction Result</h3>
-
-                    <p>
-                        The machine-learning model classifies
-                        this water sample as potable.
-                    </p>
-
+                <div class="status-potable">
+                    ✓ WATER IS POTABLE
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+
+                <h3>Prediction Result</h3>
+
+                <p>
+                    The machine-learning model classifies
+                    this water sample as potable.
+                </p>
+
+            </div>
+            """)
 
         else:
 
-            st.markdown(
-                """
-                <div class="prediction-panel">
+            render_html("""
+            <div class="prediction-panel">
 
-                    <div class="status-not-potable">
-                        ✕ WATER IS NOT POTABLE
-                    </div>
-
-                    <h3>Prediction Result</h3>
-
-                    <p>
-                        The machine-learning model classifies
-                        this water sample as not potable.
-                    </p>
-
+                <div class="status-not-potable">
+                    ✕ WATER IS NOT POTABLE
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+
+                <h3>Prediction Result</h3>
+
+                <p>
+                    The machine-learning model classifies
+                    this water sample as not potable.
+                </p>
+
+            </div>
+            """)
 
         st.caption(
-            "This is a machine-learning estimate and does not "
+            "Model prediction only. This result does not "
             "guarantee drinking-water safety."
         )
 
@@ -620,65 +641,59 @@ with input_col:
         label = FRIENDLY_NAMES[feature]
         value = values[feature]
 
-        measurement_rows += f"""
-            <tr>
-                <td>{label}</td>
-                <td>{value:,.4f}</td>
-            </tr>
-        """
+        measurement_rows += (
+            f"<tr>"
+            f"<td>{label}</td>"
+            f"<td>{value:,.4f}</td>"
+            f"</tr>"
+        )
 
-    st.markdown(
-        f"""
-        <div class="measurement-panel">
+    render_html(f"""
+    <div class="measurement-panel">
 
-            <h3>Current input measurements</h3>
+        <h3>Current input measurements</h3>
 
-            <table>
+        <table>
 
-                <thead>
-                    <tr>
-                        <th>Measurement</th>
-                        <th>Entered value</th>
-                    </tr>
-                </thead>
+            <thead>
+                <tr>
+                    <th>Measurement</th>
+                    <th>Entered value</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {measurement_rows}
-                </tbody>
+            <tbody>
+                {measurement_rows}
+            </tbody>
 
-            </table>
+        </table>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """)
 
 
 st.divider()
 
 
 # ---------------------------------------------------------
-# MODEL EVALUATION HEADER
+# MODEL EVALUATION
 # ---------------------------------------------------------
 
-st.markdown(
-    """
-    <div class="evaluation-header">
+render_html("""
+<div class="evaluation-header">
 
-        <h2>📊 Model Evaluation</h2>
+    <h2>📊 Model Evaluation</h2>
 
-        <p>
-            Performance on the held-out test dataset
-        </p>
+    <p>
+        Performance on the held-out test dataset
+    </p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""")
 
 
 # ---------------------------------------------------------
-# MODEL EVALUATION METRICS
+# EVALUATION METRICS
 # ---------------------------------------------------------
 
 metric_cols = st.columns(4)
@@ -708,24 +723,19 @@ metric_cols[3].metric(
 # RANDOM FOREST CONFUSION MATRIX
 # ---------------------------------------------------------
 
-st.markdown(
-    """
-    <div class="confusion-title">
-        Random Forest Confusion Matrix
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+render_html("""
+<div class="confusion-title">
+    Random Forest Confusion Matrix
+</div>
+""")
 
 cm = np.asarray(
     metrics["confusion_matrix"],
     dtype=int
 )
 
-# Create a smaller confusion matrix.
-
 fig, ax = plt.subplots(
-    figsize=(4.2, 3.2),
+    figsize=(4.5, 3.4),
     dpi=120
 )
 
@@ -754,8 +764,6 @@ ax.tick_params(
 )
 
 fig.tight_layout()
-
-# Center the confusion matrix.
 
 left_col, center_col, right_col = st.columns(
     [1, 1.5, 1]

@@ -37,54 +37,176 @@ st.set_page_config(
 
 # Custom styling: colors are also defined in .streamlit/config.toml.
 st.markdown("""
-    /* Predict Potability Button */
-    div.stButton > button[kind="primary"] {
-        background-color: #000000 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #000000 !important;
-        border-radius: 10px;
-        font-weight: 700;
-        min-height: 3rem;
-    }
+<style>
 
-    div.stButton > button[kind="primary"]:hover {
-        background-color: #333333 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #333333 !important;
-    }
+/* Main application background */
+.stApp {
+    background: linear-gradient(135deg, #F4F8FB 0%, #E8EEF3 100%);
+    color: #FFFFFF;
+}
 
-    /* Number Input Fields */
-    [data-testid="stNumberInput"] input {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 1px solid #000000 !important;
-    }
+/* Main heading */
+.hero {
+    padding: 35px 25px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #111827 0%, #374151 50%, #111827 100%);
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.20);
+}
 
-    /* Number Input Plus and Minus Buttons */
-    [data-testid="stNumberInput"] button {
-        background-color: #000000 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #000000 !important;
-    }
+.hero h1 {
+    color: #FFFFFF !important;
+    font-size: 2.1rem;
+    margin-bottom: 12px;
+}
 
-    [data-testid="stNumberInput"] button:hover {
-        background-color: #333333 !important;
-        color: #FFFFFF !important;
-    }
+.hero p {
+    color: #D1D5DB !important;
+    font-size: 1rem;
+}
 
-    /* Success Alert */
-    div[data-testid="stAlert"]:has([data-testid="stAlertContentSuccess"]) {
-        background-color: #D1FAE5 !important;
-        border: 1px solid #16A34A !important;
-        color: #14532D !important;
-    }
+/* Sidebar - same gradient as main heading */
+[data-testid="stSidebar"] {
+    background: linear-gradient(135deg, #111827 0%, #374151 50%, #111827 100%);
+}
 
-    /* Error Alert */
-    div[data-testid="stAlert"]:has([data-testid="stAlertContentError"]) {
-        background-color: #FEE2E2 !important;
-        border: 1px solid #DC2626 !important;
-        color: #991B1B !important;
-    }
+[data-testid="stSidebar"] * {
+    color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] input {
+    background-color: #FFFFFF !important;
+    color: #111827 !important;
+    border-radius: 10px;
+}
+
+/* Sidebar number input buttons */
+[data-testid="stSidebar"] [data-testid="stNumberInput"] button {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+/* Main headings */
+h1, h2, h3 {
+    color: #FFFFFF !important;
+}
+
+/* Main sections */
+.section-box {
+    background: linear-gradient(135deg, #111827 0%, #374151 100%);
+    padding: 30px;
+    border-radius: 50px;
+    margin: 20px 0;
+    color: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.section-box h2,
+.section-box h3,
+.section-box p {
+    color: #FFFFFF !important;
+}
+
+/* Prediction success */
+.prediction-success {
+    background: linear-gradient(135deg, #064E3B, #16A34A);
+    color: #FFFFFF;
+    padding: 25px;
+    border-radius: 30px;
+    margin: 20px 0;
+    border: 1px solid #22C55E;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Prediction error */
+.prediction-error {
+    background: linear-gradient(135deg, #7F1D1D, #DC2626);
+    color: #FFFFFF;
+    padding: 25px;
+    border-radius: 30px;
+    margin: 20px 0;
+    border: 1px solid #EF4444;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Probability cards */
+.probability-card {
+    background: linear-gradient(135deg, #111827, #374151);
+    padding: 25px;
+    border-radius: 30px;
+    margin: 10px 0;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.probability-card h4 {
+    color: #D1D5DB !important;
+    font-size: 15px;
+}
+
+.probability-card h2 {
+    color: #FFFFFF !important;
+    font-size: 30px;
+}
+
+/* Evaluation metric cards */
+div[data-testid="stMetric"] {
+    background: linear-gradient(135deg, #111827, #374151);
+    padding: 25px;
+    border-radius: 30px;
+    border: 1px solid #4B5563;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+div[data-testid="stMetric"] label,
+div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: #FFFFFF !important;
+}
+
+/* Predict button */
+div.stButton > button[kind="primary"] {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #000000 !important;
+    border-radius: 15px;
+    font-weight: 700;
+    min-height: 3rem;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    background-color: #374151 !important;
+    color: #FFFFFF !important;
+}
+
+/* Number input */
+[data-testid="stNumberInput"] input {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+}
+
+/* Plus and minus buttons */
+[data-testid="stNumberInput"] button {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+/* Dataframe */
+div[data-testid="stDataFrame"] {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Caption */
+.small-note {
+    color: #D1D5DB;
+    font-size: 0.9rem;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
 @st.cache_data

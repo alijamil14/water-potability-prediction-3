@@ -478,457 +478,172 @@ with predict_col:
         # Keep the result linked to the values that produced it.
 
         st.session_state["last_input_values"] = values.copy()
-
-
-
-    # Show the prediction and probability cards directly below
-
-    # the button, in the empty area marked in the reference image.
-
-
-
     if "last_prediction" in st.session_state:
-
         predicted_class = st.session_state["last_prediction"]
-
         probabilities = st.session_state["last_probabilities"]
-
-
-
         if "last_input_values" in st.session_state:
-
             same_input = all(
-
                 np.isclose(
-
                     values[feature],
-
                     st.session_state["last_input_values"][feature]
-
                 )
-
                 for feature in FEATURES
-
             )
-
         else:
-
             same_input = False
-
-
-
         if same_input:
-
             if predicted_class == 1:
-
                 render_html("""
-
                 <div class="prediction-panel prediction-success">
-
                     <h2>✓ Water is good for health and drinkable</h2>
-
                     <p>
-
                         The Random Forest model classifies this sample
-
                         as potable water.
-
                     </p>
-
                 </div>
-
                 """)
-
             else:
-
                 render_html("""
-
                 <div class="prediction-panel prediction-error">
-
                     <h2>✕ Water is not drinkable and dangerous for health</h2>
-
                     <p>
-
                         The Random Forest model classifies this sample
-
                         as non-potable water.
-
                     </p>
-
                 </div>
-
                 """)
-
-
-
             probability_col1, probability_col2 = st.columns(2)
-
-
-
             with probability_col1:
-
                 render_html(f"""
-
                 <div class="probability-card">
-
                     <h4>Potable Probability</h4>
-
                     <h2>{probabilities['potable'] * 100:.2f}%</h2>
-
                     <p>Class 1 - Potable</p>
-
                 </div>
-
                 """)
-
-
-
             with probability_col2:
-
                 render_html(f"""
-
                 <div class="probability-card">
-
                     <h4>Non-Potable Probability</h4>
-
                     <h2>{probabilities['not_potable'] * 100:.2f}%</h2>
-
                     <p>Class 0 - Not potable</p>
-
                 </div>
-
                 """)
-
-
-
             st.caption(
-
                 "These percentages are model estimates, not laboratory "
-
                 "measurements. A prediction alone cannot establish "
-
                 "drinking-water safety."
-
             )
-
         else:
-
             st.info(
-
                 "The input values have changed. Click Predict Potability "
-
                 "again to calculate a result for the updated measurements."
-
             )
-
-
-
-
-
-# ---------------------------------------------------------
-
-# CURRENT INPUT MEASUREMENTS
-
-# ---------------------------------------------------------
-
-
-
 with input_col:
-
     measurement_rows = ""
-
-
-
     for feature in FEATURES:
-
         label = FRIENDLY_NAMES[feature]
-
         value = values[feature]
-
-
-
         measurement_rows += (
-
             f"<tr>"
-
             f"<td>{label}</td>"
-
             f"<td>{value:,.4f}</td>"
-
             f"</tr>"
-
         )
-
-
-
     render_html(f"""
-
     <div class="measurement-panel">
-
         <h3>Current input measurements</h3>
-
-
-
         <table>
-
             <thead>
-
                 <tr>
-
                     <th>Measurement</th>
-
                     <th>Entered value</th>
-
                 </tr>
-
             </thead>
-
-
-
-            <tbody>
-
+           <tbody>
                 {measurement_rows}
-
             </tbody>
-
         </table>
-
     </div>
-
     """)
 
-
-
-
-
-# ---------------------------------------------------------
-
-# MODEL EVALUATION
-
-# ---------------------------------------------------------
-
-
-
 st.divider()
-
-
-
 render_html("""
-
 <div class="evaluation-header">
-
-    <h2>📊 Model Evaluation</h2>
-
+    <h2>Model Evaluation</h2>
     <p>
-
         Performance on the held-out test dataset
-
     </p>
-
 </div>
-
 """)
-
-
-
-
-
-# ---------------------------------------------------------
-
-# MODEL EVALUATION METRICS
-
-# ---------------------------------------------------------
-
-
-
 metric_cols = st.columns(4)
-
-
-
 metric_cols[0].metric(
-
     "Accuracy",
-
     f"{metrics['accuracy'] * 100:.2f}%"
-
 )
-
-
-
 metric_cols[1].metric(
-
     "Precision",
-
     f"{metrics['precision'] * 100:.2f}%"
-
 )
-
-
-
 metric_cols[2].metric(
-
     "Recall",
-
     f"{metrics['recall'] * 100:.2f}%"
-
 )
-
-
-
 metric_cols[3].metric(
-
     "F1-score",
-
     f"{metrics['f1_score'] * 100:.2f}%"
-
 )
-
-
-
-
-
-# ---------------------------------------------------------
-
-# RANDOM FOREST CONFUSION MATRIX
-
-# ---------------------------------------------------------
-
-
-
 render_html("""
-
 <div class="confusion-title">
-
     Random Forest Confusion Matrix
-
 </div>
-
 """)
-
-
-
 cm = np.asarray(
-
     metrics["confusion_matrix"],
-
     dtype=int
-
 )
-
-
-
 fig, ax = plt.subplots(
-
     figsize=(4.5, 3.4),
-
     dpi=120
-
 )
-
-
-
 ConfusionMatrixDisplay(
-
     confusion_matrix=cm,
-
     display_labels=[
-
         "Not potable (0)",
-
         "Potable (1)"
-
     ]
-
 ).plot(
-
     ax=ax,
-
     cmap="GnBu",
-
     colorbar=False,
-
     values_format="d"
-
 )
-
-
-
 ax.set_title(
-
     "Random Forest",
-
     fontsize=11,
-
     pad=12
-
 )
-
-
-
 ax.tick_params(
-
     axis="both",
-
     labelsize=8
-
 )
-
-
-
 fig.tight_layout()
-
-
-
 left_col, center_col, right_col = st.columns(
-
     [1, 1.5, 1]
-
 )
-
-
-
 with center_col:
-
     st.pyplot(
-
         fig,
-
         use_container_width=True
-
     )
-
-
-
 plt.close(fig)
-
-
-
-
-
-# ---------------------------------------------------------
-
-# PROJECT INFORMATION AND LIMITATIONS
-
-# ---------------------------------------------------------
-
-
-
 with st.expander(
-
     "About this project and its limitations"
-
 ):
-
     st.write(
-
         "This educational application uses a Random Forest classifier. "
-
         "The target is Potability: 0 means not potable and 1 means potable. "
-
         "Missing feature values are imputed using medians learned from the "
-
         "training data. A model prediction must not replace accredited "
-
         "laboratory water testing or public-health guidance."
-
     )

@@ -1,5 +1,4 @@
 from pathlib import Path
-from textwrap import dedent
 import json
 
 import joblib
@@ -68,7 +67,15 @@ st.set_page_config(
 # ---------------------------------------------------------
 
 def render_html(content):
-    html = dedent(content).strip()
+    """
+    Render HTML consistently without allowing indentation
+    to turn HTML elements into Markdown code blocks.
+    """
+
+    html = "\n".join(
+        line.lstrip()
+        for line in content.splitlines()
+    ).strip()
 
     st.markdown(
         html,
@@ -83,7 +90,9 @@ def render_html(content):
 render_html("""
 <style>
 
-/* MAIN APPLICATION */
+/* -----------------------------------------------------
+   MAIN APPLICATION
+----------------------------------------------------- */
 
 .stApp {
     background: linear-gradient(
@@ -105,7 +114,9 @@ render_html("""
 }
 
 
-/* HERO SECTION */
+/* -----------------------------------------------------
+   HERO SECTION
+----------------------------------------------------- */
 
 .hero {
     padding: 35px 25px;
@@ -136,7 +147,9 @@ render_html("""
 }
 
 
-/* SIDEBAR */
+/* -----------------------------------------------------
+   SIDEBAR
+----------------------------------------------------- */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -156,6 +169,7 @@ render_html("""
     color: #FFFFFF !important;
 }
 
+
 /* Sidebar number inputs */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
@@ -165,6 +179,7 @@ render_html("""
     border-radius: 5px !important;
 }
 
+
 /* Sidebar increment/decrement buttons */
 
 [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
@@ -173,10 +188,11 @@ render_html("""
     border: 1px solid #111827 !important;
 }
 
+
 /* Observed dataset range */
 
 .range-info {
-    background: #FFFFFF;
+    background: #FFFFFF !important;
     color: #111827 !important;
 
     padding: 7px 10px;
@@ -194,7 +210,9 @@ render_html("""
 }
 
 
-/* PREDICTION BUTTON */
+/* -----------------------------------------------------
+   PREDICTION BUTTON
+----------------------------------------------------- */
 
 div.stButton > button[kind="primary"] {
     background-color: #000000 !important;
@@ -206,26 +224,29 @@ div.stButton > button[kind="primary"] {
     font-weight: 700 !important;
     min-height: 3rem;
 
-    transition: color 0.25s ease, border-color 0.25s ease;
+    transition: all 0.25s ease;
 }
 
 div.stButton > button[kind="primary"]:hover {
     background-color: #000000 !important;
     color: #38BDF8 !important;
 
-    border-color: #38BDF8 !important;
-}
+    border: 1px solid #38BDF8 !important;
 
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 
-/* PREDICTION RESULT */
+/* -----------------------------------------------------
+   PREDICTION RESULT
+----------------------------------------------------- */
 
 .prediction-panel {
     padding: 28px;
     margin-top: 20px;
     margin-bottom: 18px;
+
+    border-radius: 16px;
 
     color: #FFFFFF !important;
 
@@ -263,7 +284,9 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* PROBABILITY CARDS */
+/* -----------------------------------------------------
+   PROBABILITY FIGURE CARDS
+----------------------------------------------------- */
 
 .probability-card {
     background: linear-gradient(
@@ -274,8 +297,7 @@ div.stButton > button[kind="primary"]:hover {
     );
 
     padding: 22px;
-
-    border-radius: 12px;
+    border-radius: 14px;
 
     text-align: center;
 
@@ -303,7 +325,9 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* CURRENT INPUT MEASUREMENTS */
+/* -----------------------------------------------------
+   CURRENT INPUT MEASUREMENTS
+----------------------------------------------------- */
 
 .measurement-panel {
     background: linear-gradient(
@@ -314,6 +338,8 @@ div.stButton > button[kind="primary"]:hover {
     );
 
     padding: 24px;
+
+    border-radius: 12px;
 
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
 }
@@ -350,7 +376,9 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* MODEL EVALUATION HEADER */
+/* -----------------------------------------------------
+   MODEL EVALUATION HEADER
+----------------------------------------------------- */
 
 .evaluation-header {
     background: linear-gradient(
@@ -364,6 +392,8 @@ div.stButton > button[kind="primary"]:hover {
 
     margin-top: 25px;
     margin-bottom: 22px;
+
+    border-radius: 14px;
 
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
 }
@@ -383,7 +413,9 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 
-/* EVALUATION METRIC CARDS */
+/* -----------------------------------------------------
+   EVALUATION METRIC CARDS
+----------------------------------------------------- */
 
 div[data-testid="stMetric"] {
     background: linear-gradient(
@@ -391,13 +423,13 @@ div[data-testid="stMetric"] {
         #000000 0%,
         #171717 55%,
         #080808 100%
-    );
+    ) !important;
 
-    padding: 20px;
+    padding: 22px !important;
 
-    border-radius: 15px;
+    border-radius: 15px !important;
 
-    border: 1px solid #303030;
+    border: 1px solid #303030 !important;
 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
 }
@@ -408,10 +440,13 @@ div[data-testid="stMetric"] label {
 
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     color: #FFFFFF !important;
+    font-weight: 700 !important;
 }
 
 
-/* CONFUSION MATRIX */
+/* -----------------------------------------------------
+   CONFUSION MATRIX
+----------------------------------------------------- */
 
 .confusion-title {
     color: #111827 !important;
@@ -426,7 +461,9 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 }
 
 
-/* CAPTIONS */
+/* -----------------------------------------------------
+   CAPTIONS
+----------------------------------------------------- */
 
 .stApp [data-testid="stCaptionContainer"] {
     color: #374151;

@@ -429,255 +429,157 @@ def load_data():
 def load_model():
     return joblib.load(MODEL_PATH)
 
-
 @st.cache_data
 def load_metrics():
     return json.loads(
         METRICS_PATH.read_text(encoding="utf-8")
     )
 
-
-# ---------------------------------------------------------
-# PAGE HEADER
-# ---------------------------------------------------------
-
 render_html("""
 <div class="hero">
-
     <h1 style="text-align: center;">
         UI Created By Ali Jamil
     </h1>
-
     <h1 style="text-align: center;">
         💧 Water Potability Prediction
     </h1>
-
     <p style="text-align: center;">
         Machine-learning dashboard • Random Forest binary classification
         • Prediction classes: 0 and 1
     </p>
-
 </div>
 """)
-
-
-# ---------------------------------------------------------
-# CHECK REQUIRED FILES
-# ---------------------------------------------------------
 
 missing_files = [
     path.name
     for path in [DATA_PATH, MODEL_PATH, METRICS_PATH]
     if not path.exists()
 ]
-
 if missing_files:
-
     st.error(
         "Required project files are missing: "
         + ", ".join(missing_files)
         + ". Check your data/ and models/ folders."
     )
-
     st.stop()
-
-
-# ---------------------------------------------------------
-# LOAD PROJECT RESOURCES
-# ---------------------------------------------------------
 
 df = load_data()
 model = load_model()
 metrics = load_metrics()
 
-
-# ---------------------------------------------------------
-# SIDEBAR INPUTS
-# ---------------------------------------------------------
-
 values = {}
-
 with st.sidebar:
-
     st.header("💧 Water-quality inputs")
-
     st.caption(
         "Enter the water measurements below."
     )
-
     st.divider()
-
     for feature in FEATURES:
-
         series = df[feature].dropna()
-
         default_value = float(series.median())
-
         observed_min = float(series.min())
         observed_max = float(series.max())
-
         values[feature] = st.number_input(
             FRIENDLY_NAMES[feature],
-
             value=default_value,
-
             step=max(
                 (observed_max - observed_min) / 100,
                 0.01
             ),
-
             format="%.4f",
-
             help=(
                 f"Observed dataset range: "
                 f"{observed_min:.3f} to {observed_max:.3f}"
             )
         )
 
-
-# ---------------------------------------------------------
-# PREPARE INPUT DATA
-# ---------------------------------------------------------
-
 input_df = pd.DataFrame(
     [values],
     columns=FEATURES
 )
 
-
-# ---------------------------------------------------------
-# PREDICTION AND MEASUREMENTS
-# ---------------------------------------------------------
-
 st.subheader("Water sample prediction")
-
 predict_col, input_col = st.columns([1.05, 1])
 
-
-# ---------------------------------------------------------
-# PREDICTION SECTION
-# ---------------------------------------------------------
-
 with predict_col:
-
     st.write(
         "Click the button below to predict water potability."
     )
-
     predict_clicked = st.button(
         "Predict Potability",
         type="primary",
         use_container_width=True
     )
-
     if predict_clicked:
-
         predicted_class = int(
             model.predict(input_df)[0]
         )
-
         st.session_state["last_prediction"] = predicted_class
 
-    # Display the latest prediction below the button.
-
     if "last_prediction" in st.session_state:
-
         predicted_class = st.session_state["last_prediction"]
-
         if predicted_class == 1:
-
             render_html("""
             <div class="prediction-panel">
-
                 <div class="status-potable">
                     ✓ WATER IS POTABLE
                 </div>
-
                 <h3>Prediction Result</h3>
-
                 <p>
                     The machine-learning model classifies
                     this water sample as potable.
                 </p>
-
             </div>
             """)
-
         else:
-
             render_html("""
             <div class="prediction-panel">
-
                 <div class="status-not-potable">
                     ✕ WATER IS NOT POTABLE
                 </div>
-
                 <h3>Prediction Result</h3>
-
                 <p>
                     The machine-learning model classifies
                     this water sample as not potable.
                 </p>
-
             </div>
             """)
-
         st.caption(
             "Model prediction only. This result does not "
             "guarantee drinking-water safety."
         )
 
-
-# ---------------------------------------------------------
-# CURRENT INPUT MEASUREMENTS
-# ---------------------------------------------------------
-
 with input_col:
-
     measurement_rows = ""
-
     for feature in FEATURES:
-
         label = FRIENDLY_NAMES[feature]
         value = values[feature]
-
         measurement_rows += (
             f"<tr>"
             f"<td>{label}</td>"
             f"<td>{value:,.4f}</td>"
             f"</tr>"
         )
-
     render_html(f"""
     <div class="measurement-panel">
-
         <h3>Current input measurements</h3>
-
         <table>
-
             <thead>
                 <tr>
                     <th>Measurement</th>
                     <th>Entered value</th>
                 </tr>
             </thead>
-
             <tbody>
                 {measurement_rows}
             </tbody>
-
         </table>
-
     </div>
     """)
 
 
 st.divider()
 
-
-# ---------------------------------------------------------
-# MODEL EVALUATION
-# ---------------------------------------------------------
 
 render_html("""
 <div class="evaluation-header">
@@ -690,11 +592,6 @@ render_html("""
 
 </div>
 """)
-
-
-# ---------------------------------------------------------
-# EVALUATION METRICS
-# ---------------------------------------------------------
 
 metric_cols = st.columns(4)
 
@@ -717,11 +614,6 @@ metric_cols[3].metric(
     "F1-score",
     f"{metrics['f1_score'] * 100:.2f}%"
 )
-
-
-# ---------------------------------------------------------
-# RANDOM FOREST CONFUSION MATRIX
-# ---------------------------------------------------------
 
 render_html("""
 <div class="confusion-title">
@@ -775,13 +667,7 @@ with center_col:
         fig,
         use_container_width=True
     )
-
 plt.close(fig)
-
-
-# ---------------------------------------------------------
-# PROJECT INFORMATION AND LIMITATIONS
-# ---------------------------------------------------------
 
 with st.expander(
     "About this project and its limitations"

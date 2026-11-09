@@ -323,10 +323,10 @@ with predict_col:
             "not_potable": not_potable_probability
         }
     # Display prediction result
-    if "last_prediction" in st.session_state:
+        if "last_prediction" in st.session_state:
 
-     predicted_class = st.session_state["last_prediction"]
-     probs = st.session_state["last_probabilities"]
+            predicted_class = st.session_state["last_prediction"]
+            probs = st.session_state["last_probabilities"]
 
     # Successful prediction
         if predicted_class == 1:
@@ -340,14 +340,14 @@ with predict_col:
         """, unsafe_allow_html=True)
 
     # Unsuccessful prediction
-         else:
-        st.markdown("""
-        <div class="prediction-error">
+    else:
+            st.markdown("""
+            <div class="prediction-error">
             ⚠️ WATER IS NOT POTABLE
             <br><br>
             Water is classified as not potable by the machine-learning model.
-        </div>
-        """, unsafe_allow_html=True)
+            </div>
+            """, unsafe_allow_html=True)
     # Probability cards
     prob1, prob2 = st.columns(2)
     with prob1:
@@ -358,7 +358,7 @@ with predict_col:
             <p>Potable</p>
         </div>
         """, unsafe_allow_html=True)
-    with prob2:
+        with prob2:
         st.markdown(f"""
         <div class="probability-card">
             <h4>Estimated class 0 probability</h4>
@@ -370,15 +370,15 @@ with predict_col:
         "Model estimates only. These results do not guarantee drinking-water safety."
     )
 
-    else:
-    st.info(
+else:
+st.info(
         "Enter the sample measurements in the sidebar and click Predict Potability."
     )
 
 
 with input_col:
 
-    with st.container(key="input_measurements"):
+        with st.container(key="input_measurements"):
 
         st.markdown("### 📋 Current input measurements")
 

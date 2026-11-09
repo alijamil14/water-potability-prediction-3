@@ -304,46 +304,61 @@ with predict_col:
     # Display prediction result
     if "last_prediction" in st.session_state:
 
-        predicted_class = st.session_state["last_prediction"]
-        probs = st.session_state["last_probabilities"]
+     predicted_class = st.session_state["last_prediction"]
+     probs = st.session_state["last_probabilities"]
 
-        if predicted_class == 1:
+    # Successful prediction
+    if predicted_class == 1:
 
-            st.success(
-                "Water is drinkable and healthy for people",
-                icon="✅"
-            )
+        st.markdown("""
+        <div class="prediction-success">
+            ✅ WATER IS POTABLE
+            <br><br>
+            Water is classified as potable by the machine-learning model.
+        </div>
+        """, unsafe_allow_html=True)
 
-        else:
+    # Unsuccessful prediction
+    else:
 
-            st.error(
-                "Water is not drinkable and may affect people's health",
-                icon="⚠️"
-            )
+        st.markdown("""
+        <div class="prediction-error">
+            ⚠️ WATER IS NOT POTABLE
+            <br><br>
+            Water is classified as not potable by the machine-learning model.
+        </div>
+        """, unsafe_allow_html=True)
 
-        prob1, prob2 = st.columns(2)
+    # Probability cards
+    prob1, prob2 = st.columns(2)
 
-        prob1.metric(
-            "Estimated class 1 probability",
-            f"{probs['potable'] * 100:.1f}%"
-        )
+    with prob1:
+        st.markdown(f"""
+        <div class="probability-card">
+            <h4>Estimated class 1 probability</h4>
+            <h2>{probs['potable'] * 100:.1f}%</h2>
+            <p>Potable</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        prob2.metric(
-            "Estimated class 0 probability",
-            f"{probs['not_potable'] * 100:.1f}%"
-        )
+    with prob2:
+        st.markdown(f"""
+        <div class="probability-card">
+            <h4>Estimated class 0 probability</h4>
+            <h2>{probs['not_potable'] * 100:.1f}%</h2>
+            <p>Not Potable</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.caption(
-            "These are model estimates, not a laboratory result "
-            "or a guarantee of drinking-water safety."
-        )
+    st.caption(
+        "Model estimates only. These results do not guarantee drinking-water safety."
+    )
 
     else:
 
-        st.info(
-            "Enter the sample measurements in the sidebar "
-            "and click **Predict potability**."
-        )
+    st.info(
+        "Enter the sample measurements in the sidebar and click Predict Potability."
+    )
 
 
 with input_col:

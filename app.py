@@ -165,23 +165,34 @@ with predict_col:
         }
 
     if "last_prediction" in st.session_state:
-        predicted_class = st.session_state["last_prediction"]
-        probs = st.session_state["last_probabilities"]
-        if predicted_class == 1:
-            # st.success("Prediction: POTABLE — class 1")
-            st.success("Water is drinkable and healthy for People")
-        else:
-            # st.error("Prediction: NOT POTABLE — class 0")
-            st.error("Water is not drinkable and can cause effect People's health")
 
-        prob1, prob2 = st.columns(2)
-        prob1.metric("Estimated class 1 probability", f"{probs['potable'] * 100:.1f}%")
-        prob2.metric("Estimated class 0 probability", f"{probs['not_potable'] * 100:.1f}%")
-        st.caption(
-            "These are model estimates, not a laboratory result or a guarantee of drinking-water safety."
+    predicted_class = st.session_state["last_prediction"]
+    probs = st.session_state["last_probabilities"]
+
+    if predicted_class == 1:
+
+        st.success(
+            "Water is drinkable and healthy for people",
+            icon="✅"
         )
     else:
-        st.info("Enter the sample measurements in the sidebar and click **Predict potability**.")
+        st.error(
+            "Water is not drinkable and may affect people's health",
+            icon="⚠️"
+        )
+    prob1, prob2 = st.columns(2)
+    prob1.metric(
+        "Estimated class 1 probability",
+        f"{probs['potable'] * 100:.1f}%"
+    )
+    prob2.metric(
+        "Estimated class 0 probability",
+        f"{probs['not_potable'] * 100:.1f}%"
+    )
+    st.caption(
+        "These are model estimates, not a laboratory result "
+        "or a guarantee of drinking-water safety."
+    )
 
 with input_col:
     st.markdown("**Current input measurements**")

@@ -197,7 +197,7 @@ render_html("""
 /* PREDICTION BUTTON */
 
 div.stButton > button[kind="primary"] {
-    background: #000000 !important;
+    background-color: #000000 !important;
     color: #FFFFFF !important;
 
     border: 1px solid #000000 !important;
@@ -206,14 +206,15 @@ div.stButton > button[kind="primary"] {
     font-weight: 700 !important;
     min-height: 3rem;
 
-    transition: all 0.25s ease;
+    transition: color 0.25s ease, border-color 0.25s ease;
 }
 
 div.stButton > button[kind="primary"]:hover {
-    background: #000000 !important;
+    background-color: #000000 !important;
     color: #38BDF8 !important;
 
     border-color: #38BDF8 !important;
+}
 
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }

@@ -43,298 +43,116 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-
-
-
-
-# ---------------------------------------------------------
-
-# HTML RENDERING HELPER
-
-# ---------------------------------------------------------
-
-
-
 def render_html(content):
-
-    # Remove indentation from every line so Markdown does not
-
-    # interpret indented HTML as a code block.
-
     html = "\n".join(
-
         line.lstrip()
-
         for line in content.splitlines()
-
     ).strip()
 
-
-
     st.markdown(
-
         html,
-
         unsafe_allow_html=True
-
     )
 
-
-
-
-
-# ---------------------------------------------------------
-
-# CUSTOM CSS
-
-# ---------------------------------------------------------
-
-
-
 render_html("""
-
 <style>
 
-
-
 /* Main application background */
-
-
-
 .stApp {
-
     background: linear-gradient(
-
         135deg,
-
         #F0FAFC 0%,
-
         #E1F5F8 50%,
-
         #F4FBFC 100%
-
     );
-
     color: #111827;
-
 }
-
-
-
 .stApp h1,
-
 .stApp h2,
-
 .stApp h3,
-
 .stApp h4,
-
 .stApp p {
-
     color: #111827;
-
 }
-
-
-
-
 
 /* Hero section */
-
-
-
 .hero {
-
     padding: 35px 25px;
-
     background: linear-gradient(
-
         120deg,
-
         #075985 0%,
-
         #0891B2 45%,
-
         #2DD4BF 100%
-
     );
-
     margin-bottom: 28px;
-
     box-shadow: 0 10px 30px rgba(8, 145, 178, 0.20);
-
 }
-
-
-
 .hero h1 {
-
     color: #FFFFFF !important;
-
     font-size: 2.1rem;
-
     font-weight: 750;
-
     margin: 8px 0;
-
 }
-
-
-
 .hero p {
-
     color: #E0F7FA !important;
-
     font-size: 1rem;
-
     margin-bottom: 0;
-
 }
-
-
-
-
-
 /* Sidebar */
-
-
-
 [data-testid="stSidebar"] {
-
     background: linear-gradient(
-
         160deg,
-
         #075985 0%,
-
         #0891B2 50%,
-
         #2DD4BF 100%
-
     );
-
 }
-
-
-
 [data-testid="stSidebar"] h1,
-
 [data-testid="stSidebar"] h2,
-
 [data-testid="stSidebar"] h3,
-
 [data-testid="stSidebar"] p,
-
 [data-testid="stSidebar"] label,
-
 [data-testid="stSidebar"] span {
-
     color: #FFFFFF !important;
-
 }
-
-
-
-
-
 /* Rounded number input group */
-
-
-
 [data-testid="stSidebar"] [data-testid="stNumberInput"] > div {
-
     border: 1px solid #111827 !important;
-
     border-radius: 12px !important;
-
     overflow: hidden !important;
-
     background: #FFFFFF !important;
-
 }
-
-
-
 /* Number input text field */
-
-
-
 [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
-
     background: #FFFFFF !important;
-
     color: #111827 !important;
-
     border: none !important;
-
     border-radius: 0 !important;
-
     box-shadow: none !important;
-
 }
-
-
-
 /* Increment/decrement controls */
-
-
-
 [data-testid="stSidebar"] [data-testid="stNumberInput"] button {
-
     background: #111827 !important;
-
     color: #FFFFFF !important;
-
     border: none !important;
-
     border-radius: 0 !important;
-
 }
-
-
-
 /* Observed dataset range */
-
-
-
 .range-info {
-
     background: #FFFFFF !important;
-
     color: #111827 !important;
-
     padding: 7px 10px;
-
     margin-top: 6px;
-
     margin-bottom: 13px;
-
     font-size: 12px;
-
     font-weight: 600;
-
     border-radius: 7px;
-
     border-left: 3px solid #075985;
-
 }
-
-
-
 .range-info span {
-
     color: #111827 !important;
-
 }
-
-
-
-
-
 /* Predict button */
-
-
-
 /* Predict Potability button */
 div.stButton > button[kind="primary"],
 div.stButton > button[data-testid="stBaseButton-primary"] {
@@ -346,12 +164,10 @@ div.stButton > button[data-testid="stBaseButton-primary"] {
     min-height: 3rem;
     transition: color 0.25s ease, border-color 0.25s ease;
 }
-
 div.stButton > button[kind="primary"] *,
 div.stButton > button[data-testid="stBaseButton-primary"] * {
     color: #F4B21A !important;
 }
-
 div.stButton > button[kind="primary"]:hover,
 div.stButton > button[data-testid="stBaseButton-primary"]:hover {
     background-color: #000000 !important;
@@ -359,347 +175,150 @@ div.stButton > button[data-testid="stBaseButton-primary"]:hover {
     border: 1px solid #F4B21A !important;
     box-shadow: 0 0 10px rgba(244, 178, 26, 0.25);
 }
-
 div.stButton > button[kind="primary"]:hover *,
 div.stButton > button[data-testid="stBaseButton-primary"]:hover * {
     color: #F4B21A !important;
 }
-
-
 /* Prediction result */
-
-
-
 .prediction-panel {
-
     padding: 22px;
-
     margin-top: 18px;
-
     margin-bottom: 14px;
-
     border-radius: 14px;
-
     color: #FFFFFF !important;
-
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
-
 }
-
-
-
 .prediction-success {
-
     background: linear-gradient(
-
         120deg,
-
         #14532D 0%,
-
         #15803D 50%,
-
         #22C55E 100%
-
     );
-
 }
-
-
-
 .prediction-error {
-
     background: linear-gradient(
-
         120deg,
-
         #7F1D1D 0%,
-
         #B91C1C 50%,
-
         #EF4444 100%
-
     );
-
 }
-
-
-
 .prediction-panel h2 {
-
     color: #FFFFFF !important;
-
     font-size: 21px;
-
     margin-top: 0;
-
     margin-bottom: 9px;
-
 }
-
-
-
 .prediction-panel p {
-
     color: #FFFFFF !important;
-
     font-size: 14px;
-
     margin-bottom: 0;
-
 }
-
-
-
-
-
 /* Probability cards */
-
-
-
 .probability-card {
-
     background: linear-gradient(
-
         135deg,
-
         #000000 0%,
-
         #202020 55%,
-
         #101010 100%
-
     );
-
     padding: 17px 12px;
-
     border-radius: 12px;
-
     text-align: center;
-
     border: 1px solid #383838;
-
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
-
     min-height: 112px;
-
 }
-
-
-
 .probability-card h4 {
-
     color: #D4D4D4 !important;
-
     font-size: 13px;
-
     margin: 0;
-
 }
-
-
-
 .probability-card h2 {
-
     color: #FFFFFF !important;
-
     font-size: 25px;
-
     margin: 10px 0;
-
 }
-
-
-
 .probability-card p {
-
     color: #AAAAAA !important;
-
     font-size: 11px;
-
     margin: 0;
-
 }
-
-
-
-
-
 /* Current input measurements */
-
-
-
 .measurement-panel {
-
     background: linear-gradient(
-
         135deg,
-
         #080808 0%,
-
         #292929 55%,
-
         #111111 100%
-
     );
-
     padding: 24px;
-
     border-radius: 12px;
-
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
-
 }
-
-
-
 .measurement-panel h3 {
-
     color: #FFFFFF !important;
-
     margin-top: 0;
-
     margin-bottom: 18px;
-
 }
-
-
-
 .measurement-panel table {
-
     width: 100%;
-
     border-collapse: collapse;
-
     color: #FFFFFF !important;
-
 }
-
-
-
 .measurement-panel th {
-
     background: #303030;
-
     color: #FFFFFF !important;
-
     text-align: left;
-
     padding: 12px;
-
     border-bottom: 1px solid #555555;
-
 }
-
-
-
 .measurement-panel td {
-
     background: #171717;
-
     color: #FFFFFF !important;
-
     padding: 11px 12px;
-
     border-bottom: 1px solid #383838;
-
 }
-
-
-
-
-
 /* Model evaluation header */
-
-
-
 .evaluation-header {
-
     background: linear-gradient(
-
         135deg,
-
         #050505 0%,
-
         #292929 55%,
-
         #101010 100%
-
     );
-
     padding: 27px;
-
     margin-top: 25px;
-
     margin-bottom: 22px;
-
     border-radius: 14px;
-
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
-
 }
-
-
-
 .evaluation-header h2 {
-
     color: #FFFFFF !important;
-
     margin: 0;
-
     text-align: center;
-
     font-size: 1.8rem;
-
 }
-
-
-
 .evaluation-header p {
-
     color: #D4D4D4 !important;
-
     text-align: center;
-
     margin-top: 8px;
-
     margin-bottom: 0;
-
 }
-
-
-
-
-
 /* Evaluation metric cards */
-
-
-
 div[data-testid="stMetric"] {
-
     background: linear-gradient(
-
         135deg,
-
         #000000 0%,
-
         #171717 55%,
-
         #080808 100%
-
     ) !important;
-
     padding: 22px !important;
-
     border-radius: 15px !important;
-
     border: 1px solid #303030 !important;
-
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);
-
 }
-
-
-
 /* Metric labels and values: force gold text inside each card */
 div[data-testid="stMetric"] label,
 div[data-testid="stMetric"] [data-testid="stMetricLabel"],
@@ -710,115 +329,40 @@ div[data-testid="stMetric"] [data-testid="stMetricDelta"],
 div[data-testid="stMetric"] [data-testid="stMetricDelta"] * {
     color: #F4B21A !important;
 }
-
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     font-weight: 700 !important;
 }
-
-
 /* Confusion matrix heading */
-
-
-
 .confusion-title {
-
     color: #111827 !important;
-
     text-align: center;
-
     font-size: 22px;
-
     font-weight: 750;
-
     margin-top: 28px;
-
     margin-bottom: 15px;
-
 }
-
-
-
-
-
 /* Captions */
-
-
-
 .stApp [data-testid="stCaptionContainer"] {
-
     color: #374151;
-
 }
-
-
-
 </style>
-
 """)
 
-
-
-
-
-# ---------------------------------------------------------
-
-# LOAD DATA
-
-# ---------------------------------------------------------
-
-
-
 @st.cache_data
-
 def load_data():
-
     return pd.read_csv(DATA_PATH)
 
-
-
-
-
 @st.cache_resource
-
 def load_model():
-
     return joblib.load(MODEL_PATH)
-
-
-
-
-
 @st.cache_data
-
 def load_metrics():
-
     return json.loads(
-
         METRICS_PATH.read_text(encoding="utf-8")
-
     )
-
-
-
-
-
-# ---------------------------------------------------------
-
-# PAGE HEADER
-
-# ---------------------------------------------------------
-
-
-
 render_html("""
-
 <div class="hero">
-
-    <h1 style="text-align: center;">
-
-        UI Created By Ali Jamil
-
-    </h1>
+    <h1 style="text-align: center;">UI Created By Ali Jamil</h1>
 
 
 
